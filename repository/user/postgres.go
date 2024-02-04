@@ -21,7 +21,7 @@ func (repo *PostGreSQL) InsertUser(ctx context.Context, user model.User) error {
 		return err
 	}
 
-	// Rollback incase of failure
+	// Rollback transaction incase of failure
 	defer func() {
 		if err != nil {
 			tx.Rollback()
