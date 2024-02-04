@@ -3,6 +3,7 @@ package route
 import (
 	"net/http"
 
+	route "github.com/dev-xero/authentication-backend/route/auth"
 	"github.com/dev-xero/authentication-backend/util"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -17,6 +18,9 @@ func LoadRoutes() *chi.Mux {
 		msg := "Welcome to the API"
 		util.JsonResponse(w, msg, http.StatusOK, nil)
 	})
+
+	// Setup auth route handlers
+	router.Route("/auth", route.LoadAuthRoutes)
 
 	router.NotFound(func(w http.ResponseWriter, r *http.Request) {
 		msg := "Undefined endpoint accessed"
