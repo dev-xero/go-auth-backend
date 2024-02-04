@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 
@@ -15,7 +16,19 @@ func (auth *Auth) Home(w http.ResponseWriter, r *http.Request) {
 }
 
 func (auth *Auth) SignUp(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Sign-up route hit")
+	var body struct {
+		Email    string `json:"email"`
+		Password string `json:"password"`
+	}
+
+	// Read response body into body struct
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		msg := "Bad request, email or password not present"
+		util.JsonResponse(w, msg, http.StatusBadRequest, nil)
+		return
+	}
+
+	fmt.Printf("Email: %s\nPassword: %s", body.Email, body.Password)
 }
 
 func (auth *Auth) SignIn(w http.ResponseWriter, r *http.Request) {
