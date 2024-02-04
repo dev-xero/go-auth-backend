@@ -3,6 +3,7 @@ package handler
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/dev-xero/authentication-backend/model"
@@ -47,6 +48,7 @@ func (auth *Auth) SignUp(w http.ResponseWriter, r *http.Request) {
 
 	err := auth.repo.InsertUser(r.Context(), user)
 	if err != nil {
+		log.Println(err)
 		msg := "Could not insert user into database"
 		util.JsonResponse(w, msg, http.StatusInternalServerError, nil)
 		return

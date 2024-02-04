@@ -20,18 +20,11 @@ func initDatabaseConnection() (*sql.DB, error) {
 		return nil, fmt.Errorf("%s: %w", msg, err)
 	}
 
-	// Defer closing database connection if open
-	defer func() {
-		if db != nil {
-			db.Close()
-		}
-	}()
-
 	return db, nil
 }
 
 func main() {
-	database, err := initDatabaseConnection()
+	appDatabase, err := initDatabaseConnection()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -39,6 +32,6 @@ func main() {
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer cancel()
 
-	app := application.New(database)
+	app := application.New(appDatabase)
 	app.Start(ctx)
 }
