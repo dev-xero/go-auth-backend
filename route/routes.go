@@ -18,5 +18,10 @@ func LoadRoutes() *chi.Mux {
 		util.JsonResponse(w, msg, http.StatusOK, nil)
 	})
 
+	router.NotFound(func(w http.ResponseWriter, r *http.Request) {
+		msg := "Undefined endpoint accessed"
+		util.JsonResponse(w, msg, http.StatusNotFound, nil)
+	})
+
 	return router
 }
