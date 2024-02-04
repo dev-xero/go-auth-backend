@@ -3,6 +3,7 @@ package route
 import (
 	"net/http"
 
+	"github.com/dev-xero/authentication-backend/util"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 )
@@ -13,9 +14,8 @@ func LoadRoutes() *chi.Mux {
 	router.Use(middleware.Logger)
 
 	router.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-		// w.Header().Add("Content-Type", "application/json")
-		w.Write([]byte("API Welcome"))
+		msg := "Welcome to the API"
+		util.JsonResponse(w, msg, http.StatusOK, nil)
 	})
 
 	return router
