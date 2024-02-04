@@ -1,14 +1,16 @@
 package database
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"os"
 
 	"github.com/joho/godotenv"
+	_ "github.com/lib/pq"
 )
 
-func GetConnectionString() string {
+func getConnectionString() string {
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("[FATAL]: failed to connect database", err)
@@ -30,4 +32,27 @@ func GetConnectionString() string {
 		password,
 		dbname,
 	)
+}
+
+func ConnectDatabase() (*sql.DB, error) {
+	database, err := sql.Open("postgres", getConnectionString())
+
+	if err != nil {
+		msg := "invalid connection string provided"
+		log.Println("[FAIL]:", msg)
+
+		return nil, fmt.Errorf(msg)
+	}
+
+	err = database.Ping()
+	if err != nil {
+		msg := "failed to establish a connection to the database"
+		log.Println("[FAIL]:", msg)
+
+		return nil, fmt.Errorf(msg)
+	}
+
+	log.Println("[SUCCESS]: connected database")
+
+	return database, nil
 }

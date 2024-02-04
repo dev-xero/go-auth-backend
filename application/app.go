@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"time"
 
+	"github.com/dev-xero/authentication-backend/database"
 	"github.com/dev-xero/authentication-backend/route"
 	"github.com/joho/godotenv"
 )
@@ -35,10 +37,43 @@ func (app *App) Start(ctx context.Context) error {
 		Handler: app.router,
 	}
 
-	err = server.ListenAndServe()
+	errorChan := make(chan error, 1)
+
+	// Attempt connecting to the database
+	db, err := database.ConnectDatabase()
 	if err != nil {
-		return fmt.Errorf("[FAIL]: unable to start server")
+		msg := "[FAIL]: unable to connect database"
+
+		errorChan <- fmt.Errorf("%s", msg)
+		close(errorChan)
 	}
 
-	return nil
+	// Close database connection if open
+	defer func() {
+		if db != nil {
+			db.Close()
+		}
+	}()
+
+	// Handle server listening on port in a goroutine
+	go func() {
+		err = server.ListenAndServe()
+		if err != nil {
+			msg := "[FAIL]: unable to start server"
+
+			errorChan <- fmt.Errorf("%s: %w", msg, err)
+			close(errorChan)
+		}
+	}()
+
+	// Handle graceful termination
+	select {
+	case err = <-errorChan:
+		return err
+	case <-ctx.Done():
+		timeout, cancel := context.WithTimeout(context.Background(), time.Second*10)
+		defer cancel()
+
+		return server.Shutdown(timeout)
+	}
 }
