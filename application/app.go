@@ -6,18 +6,20 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/dev-xero/authentication-backend/route"
 	"github.com/joho/godotenv"
 )
 
-type App struct{}
-
-func New() *App {
-	app := &App{}
-	return app
+type App struct {
+	router http.Handler
 }
 
-func baseHandler(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("API Home"))
+func New() *App {
+	app := &App{
+		router: route.LoadRoutes(),
+	}
+
+	return app
 }
 
 func (app *App) Start(ctx context.Context) error {
@@ -30,7 +32,7 @@ func (app *App) Start(ctx context.Context) error {
 
 	server := &http.Server{
 		Addr:    fmt.Sprintf(":%s", port),
-		Handler: http.HandlerFunc(baseHandler),
+		Handler: app.router,
 	}
 
 	err = server.ListenAndServe()
