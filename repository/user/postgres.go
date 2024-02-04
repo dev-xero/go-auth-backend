@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"log"
 
 	"github.com/dev-xero/authentication-backend/model"
 	"github.com/dev-xero/authentication-backend/util"
@@ -28,12 +29,18 @@ func (repo *PostGreSQL) InsertUser(ctx context.Context, user model.User) error {
 		}
 	}()
 
+	// Create the table if it doesn't exist
+	if err := repo.createTableIfNonExistent(ctx, tx, "users"); err != nil {
+		return err
+	}
+
 	var insertQuery = `
 		INSERT INTO users (id, username, email, password)
 		VALUES ($1, $2, $3, $4)
 	`
 	_, err = tx.ExecContext(ctx, insertQuery, user.ID, user.Username, user.Email, user.Password)
 	if err != nil {
+		log.Println(err)
 		return fmt.Errorf("[FAIL]: could not execute insert query")
 	}
 
@@ -41,6 +48,24 @@ func (repo *PostGreSQL) InsertUser(ctx context.Context, user model.User) error {
 	err = tx.Commit()
 	if err != nil {
 		return fmt.Errorf("[FAIL]: could not commit transaction")
+	}
+
+	return nil
+}
+
+func (repo *PostGreSQL) createTableIfNonExistent(ctx context.Context, tx *sql.Tx, table string) error {
+	var createTableQuery = fmt.Sprintf(`
+		CREATE TABLE IF NOT EXISTS %s (
+			id UUID PRIMARY KEY,
+			username VARCHAR(255) NOT NULL,
+			email VARCHAR(255) NOT NULL,
+			password VARCHAR(255) NOT NULL
+		);
+	`, table)
+
+	_, err := tx.ExecContext(ctx, createTableQuery)
+	if err != nil {
+		return fmt.Errorf("[FAIL]: could not create users table: %w", err)
 	}
 
 	return nil
