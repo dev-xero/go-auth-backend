@@ -1,6 +1,7 @@
 package route
 
 import (
+	"database/sql"
 	"net/http"
 
 	route "github.com/dev-xero/authentication-backend/route/auth"
@@ -10,7 +11,7 @@ import (
 )
 
 // Load routes in the app server
-func LoadRoutes() *chi.Mux {
+func LoadRoutes(db *sql.DB) *chi.Mux {
 	router := chi.NewRouter()
 	router.Use(middleware.Logger)
 
@@ -20,7 +21,9 @@ func LoadRoutes() *chi.Mux {
 	})
 
 	// Setup auth route handlers
-	router.Route("/auth", route.LoadAuthRoutes)
+	router.Route("/auth", func(router chi.Router) {
+		route.LoadAuthRoutes(router, db)
+	})
 
 	router.NotFound(func(w http.ResponseWriter, r *http.Request) {
 		msg := "Undefined endpoint accessed"

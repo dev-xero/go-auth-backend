@@ -2,24 +2,26 @@ package application
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
 	"time"
 
-	"github.com/dev-xero/authentication-backend/database"
 	"github.com/dev-xero/authentication-backend/route"
 	"github.com/joho/godotenv"
 )
 
 type App struct {
-	router http.Handler
+	router   http.Handler
+	database *sql.DB
 }
 
-func New() *App {
+func New(db *sql.DB) *App {
 	app := &App{
-		router: route.LoadRoutes(),
+		router:   route.LoadRoutes(db),
+		database: db,
 	}
 
 	return app
@@ -39,22 +41,6 @@ func (app *App) Start(ctx context.Context) error {
 	}
 
 	errorChan := make(chan error, 1)
-
-	// Attempt connecting to the database
-	db, err := database.ConnectDatabase()
-	if err != nil {
-		msg := "[FAIL]: unable to connect database"
-
-		errorChan <- fmt.Errorf("%s", msg)
-		close(errorChan)
-	}
-
-	// Close database connection if open
-	defer func() {
-		if db != nil {
-			db.Close()
-		}
-	}()
 
 	// Handle server listening on port in a goroutine
 	go func() {

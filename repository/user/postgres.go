@@ -11,11 +11,11 @@ import (
 )
 
 type PostGreSQL struct {
-	database *sql.DB
+	Database *sql.DB
 }
 
 func (repo *PostGreSQL) InsertUser(ctx context.Context, user model.User) error {
-	tx, err := repo.database.BeginTx(ctx, nil)
+	tx, err := repo.Database.BeginTx(ctx, nil)
 	if err != nil {
 		_, err = util.Fail(err, "[FAIL]: could not begin database transaction")
 		return err
@@ -23,8 +23,8 @@ func (repo *PostGreSQL) InsertUser(ctx context.Context, user model.User) error {
 
 	// Rollback transaction incase of failure
 	defer func() {
-		if err != nil {
-			tx.Rollback()
+		if rErr := tx.Rollback(); rErr != nil && err == nil {
+			err = fmt.Errorf("[FAIL]: rollback failed: %w", rErr)
 		}
 	}()
 
