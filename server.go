@@ -1,7 +1,12 @@
 package main
 
-import "fmt"
+import (
+	"context"
+
+	"github.com/dev-xero/authentication-backend/application"
+)
 
 func main() {
-	fmt.Println("Authentication Server")
+	app := application.New()
+	app.Start(context.Background())
 }
