@@ -3,6 +3,7 @@ package application
 import (
 	"context"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"time"
@@ -65,6 +66,9 @@ func (app *App) Start(ctx context.Context) error {
 			close(errorChan)
 		}
 	}()
+
+	url := fmt.Sprintf("http://127.0.0.1:%s", port)
+	log.Printf("[SUCCESS]: server listening at: %s\n", url)
 
 	// Handle graceful termination
 	select {
