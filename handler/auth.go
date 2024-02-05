@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/dev-xero/authentication-backend/model"
 	repository "github.com/dev-xero/authentication-backend/repository/user"
@@ -35,6 +36,9 @@ func (auth *Auth) SignUp(w http.ResponseWriter, r *http.Request) {
 		util.JsonResponse(w, msg, http.StatusBadRequest, nil)
 		return
 	}
+
+	// Store email addresses as lowercase
+	body.Email = strings.ToLower(body.Email)
 
 	if err := validators.ValidateUserInput(&body); err != nil {
 		msg := util.CapitalizeFirstLetter(err.Error())
