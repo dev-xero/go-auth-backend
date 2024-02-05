@@ -1,25 +1,26 @@
 package validators
 
 import (
-	"fmt"
+	"log"
 
 	"github.com/dev-xero/authentication-backend/util"
 )
 
 func ValidateUserInput(body *util.AuthRequestBody) error {
-	// Non of the fields must be empty
 	if body.Username == "" || body.Email == "" || body.Password == "" {
-		return fmt.Errorf("[FAIL]: username, email or password is empty")
+		log.Println("[FAIL]: username, email or password is empty")
+		return util.ErrEmptyFields
 	}
 
-	// The email has to be valid
 	if !util.IsValidEmail(body.Email) {
-		return fmt.Errorf("[FAIL]: invalid email provided")
+		log.Println("[FAIL]: invalid email provided")
+		return util.ErrEmailInvalid
 	}
 
 	// Password field must be at least 8 chars long
 	if len(body.Password) < 8 {
-		return fmt.Errorf("[FAIL]: password field must contain at least 8 characters")
+		log.Println("[FAIL]: password field must contain at least 8 characters")
+		return util.ErrPasswordLength
 	}
 
 	return nil

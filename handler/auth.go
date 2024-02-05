@@ -9,7 +9,7 @@ import (
 	"github.com/dev-xero/authentication-backend/model"
 	repository "github.com/dev-xero/authentication-backend/repository/user"
 	"github.com/dev-xero/authentication-backend/util"
-	"github.com/dev-xero/authentication-backend/validator"
+	validators "github.com/dev-xero/authentication-backend/validator"
 	"github.com/google/uuid"
 )
 
@@ -37,8 +37,7 @@ func (auth *Auth) SignUp(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := validators.ValidateUserInput(&body); err != nil {
-		log.Println(err)
-		msg := "Bad request, invalid fields sent"
+		msg := util.CapitalizeFirstLetter(err.Error())
 		util.JsonResponse(w, msg, http.StatusBadRequest, nil)
 		return
 	}
