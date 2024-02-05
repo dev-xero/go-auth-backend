@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"strings"
 
 	"github.com/dev-xero/authentication-backend/model"
 	"github.com/dev-xero/authentication-backend/util"
@@ -51,6 +52,34 @@ func (repo *PostGreSQL) InsertUser(ctx context.Context, user model.User) error {
 	}
 
 	return nil
+}
+
+func (repo *PostGreSQL) UserExists(ctx context.Context, email string) (bool, error) {
+	var checkUserExistsQuery = `
+		SELECT EXISTS (SELECT 1 FROM users WHERE email = $1)
+	`
+
+	var exists = false
+
+	// Check if the user is already stored in the database
+	err := repo.Database.QueryRowContext(ctx, checkUserExistsQuery, email).Scan(&exists)
+	if err != nil {
+		log.Println(err)
+
+		// if the tables doesn't exist, just return false
+		if err == sql.ErrNoRows {
+			return false, nil
+		}
+
+		// Return false if the table doesn't exist
+		if strings.Contains(err.Error(), "does not exist") {
+			return false, nil
+		}
+
+		return false, fmt.Errorf("[FAIL]: could not check if user already exists")
+	}
+
+	return exists, nil
 }
 
 func (repo *PostGreSQL) createTableIfNonExistent(ctx context.Context, tx *sql.Tx, table string) error {

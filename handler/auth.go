@@ -37,12 +37,27 @@ func (auth *Auth) SignUp(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Store email addresses as lowercase
+	// Store email addresses in lowercase
 	body.Email = strings.ToLower(body.Email)
 
 	if err := validators.ValidateUserInput(&body); err != nil {
 		msg := util.CapitalizeFirstLetter(err.Error())
 		util.JsonResponse(w, msg, http.StatusBadRequest, nil)
+		return
+	}
+
+	// Check that the user doesn't already exist
+	userExists, err := auth.repo.UserExists(r.Context(), body.Email)
+	if err != nil {
+		log.Println(err)
+		msg := "Could not check if user already exists"
+		util.JsonResponse(w, msg, http.StatusInternalServerError, nil)
+		return
+	}
+
+	if userExists {
+		msg := "A user with that email already exists"
+		util.JsonResponse(w, msg, http.StatusInternalServerError, nil)
 		return
 	}
 
@@ -53,7 +68,7 @@ func (auth *Auth) SignUp(w http.ResponseWriter, r *http.Request) {
 		Password: body.Password,
 	}
 
-	err := auth.repo.InsertUser(r.Context(), user)
+	err = auth.repo.InsertUser(r.Context(), user)
 	if err != nil {
 		log.Println(err)
 		msg := "Could not insert user into database"
