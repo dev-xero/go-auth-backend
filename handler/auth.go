@@ -46,7 +46,6 @@ func (auth *Auth) SignUp(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Check that the user doesn't already exist
 	userExists, err := auth.repo.UserExists(r.Context(), body.Email)
 	if err != nil {
 		log.Println(err)
@@ -54,10 +53,11 @@ func (auth *Auth) SignUp(w http.ResponseWriter, r *http.Request) {
 		util.JsonResponse(w, msg, http.StatusInternalServerError, nil)
 		return
 	}
-
+	
+	// Check that the user doesn't already exist
 	if userExists {
 		msg := "A user with that email already exists"
-		util.JsonResponse(w, msg, http.StatusInternalServerError, nil)
+		util.JsonResponse(w, msg, http.StatusBadRequest, nil)
 		return
 	}
 

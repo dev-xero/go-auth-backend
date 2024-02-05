@@ -66,11 +66,6 @@ func (repo *PostGreSQL) UserExists(ctx context.Context, email string) (bool, err
 	if err != nil {
 		log.Println(err)
 
-		// if the tables doesn't exist, just return false
-		if err == sql.ErrNoRows {
-			return false, nil
-		}
-
 		// Return false if the table doesn't exist
 		if strings.Contains(err.Error(), "does not exist") {
 			return false, nil
