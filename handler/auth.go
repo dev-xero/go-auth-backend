@@ -9,6 +9,7 @@ import (
 	"github.com/dev-xero/authentication-backend/model"
 	repository "github.com/dev-xero/authentication-backend/repository/user"
 	"github.com/dev-xero/authentication-backend/util"
+	"github.com/dev-xero/authentication-backend/validators"
 	"github.com/google/uuid"
 )
 
@@ -26,15 +27,18 @@ func (auth *Auth) Home(w http.ResponseWriter, r *http.Request) {
 }
 
 func (auth *Auth) SignUp(w http.ResponseWriter, r *http.Request) {
-	var body struct {
-		Username string `json:"username"`
-		Email    string `json:"email"`
-		Password string `json:"password"`
-	}
+	var body = util.AuthRequestBody{}
 
 	// Read response body into body struct
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
 		msg := "Bad request, username, email or password not present"
+		util.JsonResponse(w, msg, http.StatusBadRequest, nil)
+		return
+	}
+
+	if err := validators.ValidateUserInput(&body); err != nil {
+		log.Println(err)
+		msg := "Bad request, invalid fields sent"
 		util.JsonResponse(w, msg, http.StatusBadRequest, nil)
 		return
 	}

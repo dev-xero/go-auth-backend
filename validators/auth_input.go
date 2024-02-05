@@ -6,13 +6,7 @@ import (
 	"github.com/dev-xero/authentication-backend/util"
 )
 
-type body struct {
-	Username string
-	Email    string
-	Password string
-}
-
-func ValidateUserInput(body *body) error {
+func ValidateUserInput(body *util.AuthRequestBody) error {
 	// Non of the fields must be empty
 	if body.Username == "" || body.Email == "" || body.Password == "" {
 		return fmt.Errorf("[FAIL]: username, email or password is empty")
