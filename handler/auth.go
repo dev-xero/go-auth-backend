@@ -9,7 +9,7 @@ import (
 	"github.com/dev-xero/authentication-backend/model"
 	repository "github.com/dev-xero/authentication-backend/repository/user"
 	"github.com/dev-xero/authentication-backend/util"
-	"github.com/dev-xero/authentication-backend/validators"
+	"github.com/dev-xero/authentication-backend/validator"
 	"github.com/google/uuid"
 )
 
