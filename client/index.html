@@ -11,6 +11,29 @@
    <script>
       console.log('Client Loaded')
 
+      const optionsWithBody = (method, body) => {
+         return {
+            method: method,
+            mode: 'cors',
+            credentials: 'include',
+            headers: {
+               'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(body),
+         }
+      }
+
+      const defaultOptions = (method) => {
+         return {
+            method: method,
+            mode: 'cors',
+            credentials: 'include',
+            headers: {
+               'Content-Type': 'application/json',
+            },
+         }
+      }
+
       const URL = 'http://localhost:3000/auth/sign-up'
       // You might have to change this since it's very likely the user already exists
       const body = {
@@ -18,17 +41,18 @@
          password: 'sudoaptupdatessh',
          email: 'client@ssh.io',
       }
-      const options = {
-         method: 'POST',
-         mode: 'cors',
-         credentials: 'include',
-         headers: {
-            'Content-Type': 'application/json',
-         },
-         body: JSON.stringify(body),
-      }
+      // Custom options
+      const options = optionsWithBody('POST', body)
+
       fetch(URL, options)
          .then((res) => res.json())
          .then((data) => console.log(data))
+         .then(() => {
+            const URL = 'http://localhost:3000/user/my-id'
+            const options = defaultOptions('GET')
+            fetch(URL, options)
+               .then((res) => res.json())
+               .then((data) => console.log(data))
+         })
    </script>
 </html>

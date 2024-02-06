@@ -28,7 +28,7 @@ func AuthenticateMiddleware(next http.Handler) http.Handler {
 			return
 		}
 
-		log.Printf("[SUCCESS]: token successfully verified: %v+\\", token.Claims)
+		log.Printf("[SUCCESS]: token successfully verified: %v", token.Claims)
 
 		next.ServeHTTP(w, r)
 	})
