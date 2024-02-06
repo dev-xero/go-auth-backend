@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/dev-xero/authentication-backend/authentication"
 	"github.com/dev-xero/authentication-backend/model"
 	repository "github.com/dev-xero/authentication-backend/repository/user"
 	"github.com/dev-xero/authentication-backend/util"
@@ -68,6 +69,15 @@ func (auth *Auth) SignUp(w http.ResponseWriter, r *http.Request) {
 		Password: body.Password,
 	}
 
+	// Create a token and send it back to the user
+	token, err := authentication.CreateJWToken(user.ID)
+	if err != nil {
+		log.Println(err)
+		msg := "Failed to create token"
+		util.JsonResponse(w, msg, http.StatusInternalServerError, nil)
+		return
+	}
+
 	err = auth.repo.InsertUser(r.Context(), user)
 	if err != nil {
 		log.Println(err)
@@ -75,6 +85,17 @@ func (auth *Auth) SignUp(w http.ResponseWriter, r *http.Request) {
 		util.JsonResponse(w, msg, http.StatusInternalServerError, nil)
 		return
 	}
+
+	cookie := http.Cookie{
+		Name:     "token",
+		Value:    token,
+		Path:     "/",
+		Secure:   false,
+		SameSite: http.SameSiteLaxMode,
+		HttpOnly: false,
+	}
+
+	http.SetCookie(w, &cookie)
 
 	// Return user object in response
 	msg := "Successfully inserted user into database"

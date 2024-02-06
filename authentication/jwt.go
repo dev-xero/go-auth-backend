@@ -17,7 +17,8 @@ func CreateJWToken(userID uuid.UUID) (string, error) {
 		return "", fmt.Errorf("[FAIL]: could not load environment variables: %w", err)
 	}
 
-	var secretKey = os.Getenv("JWT_SECRET_KEY")
+	var secretKey = []byte(os.Getenv("JWT_SECRET_KEY"))
+	log.Println(secretKey)
 
 	claims := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"sub":    userID,
