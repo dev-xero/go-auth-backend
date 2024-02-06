@@ -25,12 +25,12 @@ go run server.go
   
   ### Request
   
-  ```
+  ```url
   [POST] http://localhost:3000/auth/sign-up
   ```
   ### Body (JSON)
   
-  ```
+  ```json
   {
     "email":    "string",
     "username": "string",
@@ -41,7 +41,7 @@ go run server.go
   
   ### Response
 
-  ```
+  ```json
   {
       "message": "Successfully inserted user into database",
       "success": true,
