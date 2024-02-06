@@ -4,7 +4,8 @@ import (
 	"database/sql"
 	"net/http"
 
-	route "github.com/dev-xero/authentication-backend/route/auth"
+	auth "github.com/dev-xero/authentication-backend/route/auth"
+	user "github.com/dev-xero/authentication-backend/route/user"
 	"github.com/dev-xero/authentication-backend/util"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -31,7 +32,12 @@ func LoadRoutes(db *sql.DB) *chi.Mux {
 
 	// Setup auth route handlers
 	router.Route("/auth", func(router chi.Router) {
-		route.LoadAuthRoutes(router, db)
+		auth.LoadAuthRoutes(router, db)
+	})
+
+	// Setup user route handlers
+	router.Route("/user", func(router chi.Router) {
+		user.LoadUserRoutes(router, db)
 	})
 
 	router.NotFound(func(w http.ResponseWriter, r *http.Request) {
