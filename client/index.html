@@ -46,11 +46,14 @@
 
       fetch(URL, options)
          .then((res) => res.json())
-         .then((data) => console.log(data))
-         .then(() => {
-            // Access the user/id route (protected)
-            const URL = 'http://localhost:3000/user/my-id'
+         .then((data) => {
+            console.log(data)
+
+            const id = data.payload.id
+            const URL = `http://localhost:3000/user/${id}`
             const options = defaultOptions('GET')
+
+            // Access the user/id route (protected)
             fetch(URL, options)
                .then((res) => res.json())
                .then((data) => console.log(data))
