@@ -1,18 +1,24 @@
 # `GO Authentication Backend` 
+
 A web server backend with complete JWT user authentication, written in GO.
 
 ## Stack
+
 1. GO: programming language
 2. JWT: authentication strategy
 3. PostgreSQL: primary database
 4. Render: cloud hosting platform
+   
 ## Running locally
+
 Before you can run the server locally, you need to create a .env file which stores most of the server's private configurations. An example env file shows all the parameters required, then the server can be run by using the command:
 
 ```bash
 go run server.go
 ```
+
 ## Endpoints
+
 1. domain`/`
 2. domain`/auth/sign-up`
 3. domain`/auth/sign-in`
@@ -46,9 +52,9 @@ go run server.go
       "message": "Successfully inserted user into database",
       "success": true,
       "payload": {
-          "id": "some-uuid",
+          "id":       "some-uuid",
           "username": "username",
-          "email": "email",
+          "email":    "email",
           "password": "password"
       }
   }
