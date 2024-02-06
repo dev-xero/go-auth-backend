@@ -1,5 +1,3 @@
-<p><a target="_blank" href="https://app.eraser.io/workspace/OC7cihBr6RUkY14rwfby" id="edit-in-eraser-github-link"><img alt="Edit in Eraser" src="https://firebasestorage.googleapis.com/v0/b/second-petal-295822.appspot.com/o/images%2Fgithub%2FOpen%20in%20Eraser.svg?alt=media&amp;token=968381c8-a7e7-472a-8ed6-4a6626da5501"></a></p>
-
 # `GO Authentication Backend` 
 A web server backend with complete JWT user authentication, written in GO.
 
@@ -15,42 +13,46 @@ Before you can run the server locally, you need to create a .env file which stor
 go run server.go
 ```
 ## Endpoints
-Available endpoints for testing:
+1. domain`/`
+2. domain`/auth/sign-up`
+3. domain`/auth/sign-in`
+4. domain`/auth/sign-out`
+5. domain`/user/id`
 
-### Authentication
-1. Sign-up
-The URL and port number can be different depending on your configurations
+## 1. Sign Up
+    
+  The URL and port number can be different depending on your configurations
+  
+  ### Request
+  
+  ```
+  [POST] http://localhost:3000/auth/sign-up
+  ```
+  ### Body (JSON)
+  
+  ```
+  {
+    "email":    "string",
+    "username": "string",
+    "password": "string"
+  }
+  ```
+  Upon successful sign-up, a response like the one below will be sent along with a token stored in the client's cookie store
+  
+  ### Response
 
-**Request**
-
-```
-[POST] http://localhost:3000/sign-up
-```
-**Body** (JSON)
-
-```
-{
-  "email":    "string",
-  "username": "string",
-  "password": "string"
-}
-```
-Upon successful sign-up, a response like the one below will be sent along with a token stored in the client's cookie store
-
-**Response**
-
-```
-{
-    "message": "Successfully inserted user into database",
-    "success": true,
-    "payload": {
-        "ID": "some-uuid",
-        "Username": "username",
-        "Email": "email",
-        "Password": "password"
-    }
-}
-```
+  ```
+  {
+      "message": "Successfully inserted user into database",
+      "success": true,
+      "payload": {
+          "ID": "some-uuid",
+          "Username": "username",
+          "Email": "email",
+          "Password": "password"
+      }
+  }
+  ```
 
 
 
