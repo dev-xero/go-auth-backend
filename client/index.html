@@ -18,6 +18,11 @@
          headers: {
             'Content-Type': 'application/json',
          },
+         body: JSON.stringify({
+            username: 'xero.ssh',
+            password: 'sudoaptupdatessh',
+            email: 'client@ssh.io',
+         }),
       }
       fetch(URL, options)
          .then((res) => res.json())
