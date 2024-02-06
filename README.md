@@ -46,10 +46,10 @@ go run server.go
       "message": "Successfully inserted user into database",
       "success": true,
       "payload": {
-          "ID": "some-uuid",
-          "Username": "username",
-          "Email": "email",
-          "Password": "password"
+          "id": "some-uuid",
+          "username": "username",
+          "email": "email",
+          "password": "password"
       }
   }
   ```
