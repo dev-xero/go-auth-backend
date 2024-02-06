@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Request Client</title>
+   </head>
+   <body>
+      <h2 style="font-family: sans-serif; font-size: 32px">Request Client</h2>
+   </body>
+   <script>
+      console.log('Client Loaded')
+      const URL = 'http://localhost:3000/auth/sign-up'
+      const options = {
+         method: 'POST',
+         mode: 'cors',
+         credentials: 'include',
+         headers: {
+            'Content-Type': 'application/json',
+         },
+      }
+      fetch(URL, options)
+         .then((res) => res.json())
+         .then((data) => console.log(data))
+   </script>
+</html>
