@@ -48,6 +48,7 @@
          .then((res) => res.json())
          .then((data) => console.log(data))
          .then(() => {
+            // Access the user/id route (protected)
             const URL = 'http://localhost:3000/user/my-id'
             const options = defaultOptions('GET')
             fetch(URL, options)
