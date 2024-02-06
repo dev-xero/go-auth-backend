@@ -10,7 +10,14 @@
    </body>
    <script>
       console.log('Client Loaded')
+
       const URL = 'http://localhost:3000/auth/sign-up'
+      // You might have to change this since it's very likely the user already exists
+      const body = {
+         username: 'xero.ssh',
+         password: 'sudoaptupdatessh',
+         email: 'client@ssh.io',
+      }
       const options = {
          method: 'POST',
          mode: 'cors',
@@ -18,11 +25,7 @@
          headers: {
             'Content-Type': 'application/json',
          },
-         body: JSON.stringify({
-            username: 'xero.ssh',
-            password: 'sudoaptupdatessh',
-            email: 'client@ssh.io',
-         }),
+         body: JSON.stringify(body),
       }
       fetch(URL, options)
          .then((res) => res.json())
