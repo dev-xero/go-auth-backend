@@ -13,3 +13,5 @@ require (
 )
 
 require github.com/golang-jwt/jwt/v5 v5.2.0
+
+require github.com/mrz1836/go-sanitize v1.3.1 // indirect

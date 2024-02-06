@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"strings"
 
 	"github.com/dev-xero/authentication-backend/authentication"
 	"github.com/dev-xero/authentication-backend/model"
@@ -13,6 +12,7 @@ import (
 	"github.com/dev-xero/authentication-backend/util"
 	validators "github.com/dev-xero/authentication-backend/validator"
 	"github.com/google/uuid"
+	"github.com/mrz1836/go-sanitize"
 )
 
 type Auth struct {
@@ -38,8 +38,12 @@ func (auth *Auth) SignUp(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Store email addresses in lowercase
-	body.Email = strings.ToLower(body.Email)
+	// Sanitize user input
+	body.Email = sanitize.Email(body.Email, false)
+	body.Username = sanitize.Alpha(body.Username, false)
+	body.Password = sanitize.AlphaNumeric(body.Password, false)
+
+	log.Printf("[LOG]: Sanitized user input")
 
 	if err := validators.ValidateUserInput(&body); err != nil {
 		msg := util.CapitalizeFirstLetter(err.Error())

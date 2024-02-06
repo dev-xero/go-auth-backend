@@ -18,7 +18,6 @@ func CreateJWToken(userID uuid.UUID) (string, error) {
 	}
 
 	var secretKey = []byte(os.Getenv("JWT_SECRET_KEY"))
-	log.Println(secretKey)
 
 	claims := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"sub":    userID,
