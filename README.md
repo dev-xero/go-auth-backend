@@ -17,6 +17,20 @@ Before you can run the server locally, you need to create a .env file which stor
 go run server.go
 ```
 
+Alternatively, you can batch execute some pre-commands and run the server at once using make.  
+Installation (Unix):
+
+```bash
+   sudo apt update
+   sudo apt install make
+```
+
+Then run the server using:
+
+```bash
+   make server
+```
+
 ## Endpoints
 
 1. domain`/`
