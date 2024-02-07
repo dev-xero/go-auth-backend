@@ -103,6 +103,32 @@ func (repo *PostGreSQL) GetUserByID(ctx context.Context, id string) (model.User,
 	return user, nil
 }
 
+func (repo *PostGreSQL) GetUserByEmail(ctx context.Context, email string) (model.User, error) {
+	tx, err := repo.Database.BeginTx(ctx, nil)
+	if err != nil {
+		_, err = util.Fail(err, "[FAIL]: could not begin database transaction")
+		return model.User{}, err
+	}
+
+	repo.createTableIfNonExistent(ctx, tx, "users")
+
+	var getUserByIDQuery = `
+		SELECT id, username, email, password FROM users WHERE email = $1
+	`
+	var user model.User
+
+	err = tx.QueryRowContext(ctx, getUserByIDQuery, email).Scan(&user.ID, &user.Username, &user.Email, &user.Password)
+	if err != nil {
+		log.Println(err)
+		if err == sql.ErrNoRows {
+			return model.User{}, fmt.Errorf("[FAIL]: user with email %s not found", email)
+		}
+		return model.User{}, fmt.Errorf("[FAIL]: could not execute query: %w", err)
+	}
+
+	return user, nil
+}
+
 func (repo *PostGreSQL) createTableIfNonExistent(ctx context.Context, tx *sql.Tx, table string) error {
 	var createTableQuery = fmt.Sprintf(`
 		CREATE TABLE IF NOT EXISTS %s (

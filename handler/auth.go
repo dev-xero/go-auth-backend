@@ -12,7 +12,6 @@ import (
 	"github.com/dev-xero/authentication-backend/util"
 	validators "github.com/dev-xero/authentication-backend/validator"
 	"github.com/google/uuid"
-	"github.com/mrz1836/go-sanitize"
 )
 
 type Auth struct {
@@ -38,11 +37,7 @@ func (auth *Auth) SignUp(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Sanitize user input
-	body.Email = sanitize.Email(body.Email, false)
-	body.Username = sanitize.Alpha(body.Username, false)
-	body.Password = sanitize.AlphaNumeric(body.Password, false)
-
+	util.SanitizeUserInput(&body)
 	log.Printf("[LOG]: Sanitized user input")
 
 	if err := validators.ValidateUserInput(&body); err != nil {
@@ -90,24 +85,63 @@ func (auth *Auth) SignUp(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	cookie := http.Cookie{
-		Name:     "token",
-		Value:    token,
-		Path:     "/",
-		Secure:   false,
-		SameSite: http.SameSiteLaxMode,
-		HttpOnly: false,
-	}
-
+	cookie := util.CreateTokenCookie(token)
 	http.SetCookie(w, &cookie)
-
-	// Return user object in response
-	msg := "Successfully inserted user into database"
-	util.JsonResponse(w, msg, http.StatusOK, user)
+	util.JsonResponse(w, "Successfully inserted user into database", http.StatusOK, user)
 }
 
 func (auth *Auth) SignIn(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Sign-in route hit")
+	var body = util.AuthRequestBody{}
+
+	// Read response body into body struct
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		msg := "Bad request, username, email or password not present"
+		util.JsonResponse(w, msg, http.StatusBadRequest, nil)
+		return
+	}
+
+	util.ExpireCookie(w, "token")
+	util.SanitizeUserInput(&body)
+
+	userExists, err := auth.repo.UserExists(r.Context(), body.Email)
+	if err != nil {
+		msg := "Internal server error, could not check if user already exists"
+		util.JsonResponse(w, msg, http.StatusInternalServerError, nil)
+		return
+	}
+
+	if !userExists {
+		msg := "A user with those credentials does not exist"
+		util.JsonResponse(w, msg, http.StatusBadRequest, nil)
+		return
+	}
+
+	user, err := auth.repo.GetUserByEmail(r.Context(), body.Email)
+	if err != nil {
+		msg := "Internal server error, could not check if a user with that email exists"
+		util.JsonResponse(w, msg, http.StatusInternalServerError, nil)
+		return
+	}
+
+	// Check that the password matches
+	if user.Password != body.Password {
+		msg := "Provided passwords mismatch"
+		util.JsonResponse(w, msg, http.StatusUnauthorized, nil)
+		return
+	}
+
+	// Generate a new token and send response
+	token, err := authentication.CreateJWToken(user.ID)
+	if err != nil {
+		log.Println(err)
+		msg := "Failed to create token"
+		util.JsonResponse(w, msg, http.StatusInternalServerError, nil)
+		return
+	}
+
+	cookie := util.CreateTokenCookie(token)
+	http.SetCookie(w, &cookie)
+	util.JsonResponse(w, "Successfully signed-in", http.StatusOK, user)
 }
 
 func (auth *Auth) SignOut(w http.ResponseWriter, r *http.Request) {
