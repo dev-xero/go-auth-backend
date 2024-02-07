@@ -18,17 +18,18 @@ go run server.go
 ```
 
 Alternatively, you can batch execute some pre-commands and run the server at once using make.  
+
 Installation (Unix):
 
 ```bash
-   sudo apt update
-   sudo apt install make
+sudo apt update
+sudo apt install make
 ```
 
 Then run the server using:
 
 ```bash
-   make server
+make server
 ```
 
 ## Endpoints
