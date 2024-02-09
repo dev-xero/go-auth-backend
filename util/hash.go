@@ -2,6 +2,7 @@ package util
 
 import (
 	"log"
+
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -16,6 +17,12 @@ type HashCost struct {
 	Min  int
 	Max  int
 	Base int
+}
+
+var DefaultHashCost = HashCost{
+	Min:  10,
+	Max:  14,
+	Base: bcrypt.DefaultCost,
 }
 
 /*

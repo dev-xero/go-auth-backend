@@ -85,9 +85,16 @@ func (auth *Auth) SignUp(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Send response with user payload
+	var userPayload = util.UserPayload{
+		ID:       user.ID,
+		Username: user.Username,
+		Email:    user.Email,
+	}
+
 	cookie := util.CreateTokenCookie(token)
 	http.SetCookie(w, &cookie)
-	util.JsonResponse(w, "Successfully inserted user into database", http.StatusOK, user)
+	util.JsonResponse(w, "Successfully inserted user into database", http.StatusOK, userPayload)
 }
 
 func (auth *Auth) SignIn(w http.ResponseWriter, r *http.Request) {

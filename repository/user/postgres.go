@@ -35,6 +35,14 @@ func (repo *PostGreSQL) InsertUser(ctx context.Context, user model.User) error {
 		return err
 	}
 
+	// Hash user password
+	user.Password, err = util.GenerateHash(user.Password, util.DefaultHashCost)
+	if err != nil {
+		return err
+	}
+
+	log.Println("Hashed user password:", user.Password)
+
 	var insertQuery = `
 		INSERT INTO users (id, username, email, password)
 		VALUES ($1, $2, $3, $4)
