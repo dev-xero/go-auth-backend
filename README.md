@@ -69,8 +69,7 @@ make server
       "payload": {
           "id":       "some-uuid",
           "username": "username",
-          "email":    "email",
-          "password": "password"
+          "email":    "email"
       }
   }
   ```
