@@ -19,7 +19,7 @@ Objectives:
 
 Params:
   - router: A chi router
-  - db: A pointer to the application database
+  - db:     A pointer to the application database
 
 Returns:
   - No return value

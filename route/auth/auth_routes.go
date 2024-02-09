@@ -8,6 +8,21 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
+/*
+Loads auth routes
+
+Objectives:
+  - Setup an auth sub-router
+  - Setup a database repository
+  - Handle requests made to auth routes
+
+Params:
+  - router: A chi router
+  - db:     A pointer to the application database
+
+Returns:
+  - No return value
+*/
 func LoadAuthRoutes(router chi.Router, db *sql.DB) {
 	auth := &handler.Auth{}
 	auth.New(&repository.PostGreSQL{Database: db})
