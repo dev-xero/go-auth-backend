@@ -13,8 +13,7 @@ import (
 )
 
 /*
-Definition:
-  - Loads the application routes
+Loads the application routes
 
 Objectives:
   - Create the application base router

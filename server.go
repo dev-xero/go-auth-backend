@@ -15,6 +15,9 @@ import (
 /*
 Connects to the PostGreSQL database using the credentials
 
+Params:
+  - No parameters
+
 Returns:
   - A pointer to the sql database
   - An error if the connection failed
@@ -30,12 +33,18 @@ func initDatabaseConnection() (*sql.DB, error) {
 }
 
 /*
-Main is the server entry point.
+Main is the server entry point
 
 Objectives:
-  - Initializes a database connection.
-  - Spins up a context channel to handle OS interrupts.
-  - Starts the server.
+  - Initializes a database connection
+  - Spins up a context channel to handle OS interrupts
+  - Starts the server
+
+Params:
+  - No parameters
+
+Returns:
+  - No return value
 */
 func main() {
 	appDatabase, err := initDatabaseConnection()
