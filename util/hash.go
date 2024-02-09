@@ -29,13 +29,16 @@ var DefaultHashCost = HashCost{
 /*
 Generates a bcrypt hash of a string argument with the provided options
 
+Objectives:
+  - Generate a bcrypt hash from the password using a base cost
+
 Params:
-  - str: the string to hash
-  - costOptions: contains configurations for the hashing cost
+  - str: The string to hash
+  - costOptions: Contains configurations for the hashing cost
 
 Returns:
-  - a string which is the hash
-  - an error if the hashing failed
+  - A string which is the hash
+  - An error if the hashing failed
 */
 func GenerateHash(str string, costOptions HashCost) (string, error) {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(str), costOptions.Base)
@@ -50,12 +53,16 @@ func GenerateHash(str string, costOptions HashCost) (string, error) {
 /*
 Compares the hash with the string, returns true if they match
 
+Objectives:
+  - Compare the provided string with a hash
+  - Evaluate whether the string is equivalent to the hash
+
 Params:
-  - hash: the hash to compare against
-  - str: the string to compare with the hash
+  - hash: The hash to compare against
+  - str: The string to compare with the hash
 
 Returns:
-  - true if the string matches the hash, false otherwise
+  - True if the string matches the hash, false otherwise
 */
 func CompareWithHash(hash []byte, str string) bool {
 	err := bcrypt.CompareHashAndPassword(hash, []byte(str))
