@@ -24,11 +24,13 @@ Returns:
   - A PostGreSQL connection string
 */
 func getConnectionString() string {
+	// Load environment variables
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("[FATAL]: failed to connect database", err)
 	}
 
+	// Store private connection details
 	var (
 		host     = os.Getenv("DB_HOST")
 		port     = os.Getenv("DB_PORT")
@@ -62,8 +64,10 @@ Returns:
   - An error if unsuccessful
 */
 func ConnectDatabase() (*sql.DB, error) {
+	// Open a new database connection
 	database, err := sql.Open("postgres", getConnectionString())
 
+	// Return an error if the connection failed
 	if err != nil {
 		msg := "invalid connection string provided"
 		log.Println("[FAIL]:", msg)
@@ -71,6 +75,7 @@ func ConnectDatabase() (*sql.DB, error) {
 		return nil, fmt.Errorf(msg)
 	}
 
+	// Ping the database to verify the connection
 	err = database.Ping()
 	if err != nil {
 		msg := "failed to establish a connection to the database"
