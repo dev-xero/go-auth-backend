@@ -67,7 +67,7 @@ make server
       "message": "Successfully inserted user into database",
       "success": true,
       "payload": {
-          "id":       "some-uuid",
+          "id":       "generated-uuid",
           "username": "username",
           "email":    "email"
       }
