@@ -19,7 +19,7 @@ Params:
   - No parameters
 
 Returns:
-  - A pointer to the sql database
+  - A pointer to the SQL database
   - An error if the connection failed
 */
 func initDatabaseConnection() (*sql.DB, error) {
