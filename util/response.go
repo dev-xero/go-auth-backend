@@ -26,9 +26,9 @@ type Response struct {
 User payload struct
 
 Fields:
-  - ID: uuid
+  - ID:       uuid
   - Username: string
-  - Email: string
+  - Email:    string
 */
 type UserPayload struct {
 	ID       uuid.UUID `json:"id"`
