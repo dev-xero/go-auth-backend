@@ -15,10 +15,10 @@ Objectives:
   - Password length must be at least 8 characters
 
 Params:
-  - Auth request body with
+  - body: Auth request body with
 
 Returns:
-  - Returns an error if the auth request body doesn't pass all checks
+  - An error if the auth request body doesn't pass all checks
 */
 func ValidateUserInput(body *util.AuthRequestBody) error {
 	if body.Username == "" || body.Email == "" || body.Password == "" {
