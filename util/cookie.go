@@ -13,7 +13,7 @@ func CreateTokenCookie(token string) http.Cookie {
 		Secure:   false,
 		SameSite: http.SameSiteLaxMode,
 		HttpOnly: false,
-		MaxAge:   60, // Lives for 1 hour
+		MaxAge:   3600, // Lives for 1 hour
 	}
 	return cookie
 }

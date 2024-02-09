@@ -15,4 +15,6 @@ github.com/mrz1836/go-sanitize v1.3.1 h1:bTxpzDXzGh9cp3XLTeVKgL2iLqEwCaLqqe+3Bmp
 github.com/mrz1836/go-sanitize v1.3.1/go.mod h1:Js6Gq1uiarNReoOeOKxPXxNpKy1FRlbgDDZnJG4THdM=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/stretchr/testify v1.8.4 h1:CcVxjf3Q8PM0mHUKJCdn+eZZtm5yQwehR5yeSVQQcUk=
+golang.org/x/crypto v0.19.0 h1:ENy+Az/9Y1vSrlrvBSyna3PITt4tiZLf7sgCjZBX7Wo=
+golang.org/x/crypto v0.19.0/go.mod h1:Iy9bg/ha4yyC70EfRS8jz+B6ybOBKMaSxLj6P6oBDfU=
 gopkg.in/yaml.v3 v3.0.1 h1:fxVm/GzAzEWqLHuvctI91KS9hhNmmWOoWu0XTYJS7CA=
