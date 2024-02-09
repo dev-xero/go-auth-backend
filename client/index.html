@@ -34,29 +34,61 @@
          }
       }
 
+      const getUserData = () => {
+         const user = JSON.parse(localStorage.getItem('user'))
+         console.log(user)
+         const id = user.id ? user.id : ''
+
+         const URL = `http://localhost:3000/user/${id}`
+         const options = defaultOptions('GET')
+
+         // Access the user/id route (protected)
+         fetch(URL, options)
+            .then((res) => res.json())
+            .then((data) => console.log(data))
+      }
+
+      const signIn = () => {
+         const URL = `http://localhost:3000/auth/sign-in`
+         const options = optionsWithBody(
+            'POST',
+            JSON.stringify({
+               username: 'xero.ssh',
+               password: 'sudoaptupdatessh',
+               email: 'clientso@ssh.io',
+            })
+         )
+
+         // Access the user/id route (protected)
+         fetch(URL, options)
+            .then((res) => res.json())
+            .then((data) => console.log(data))
+      }
+
       const URL = 'http://localhost:3000/auth/sign-up'
       // You might have to change this since it's very likely the user already exists
       const body = {
          username: 'xero.ssh',
          password: 'sudoaptupdatessh',
-         email: 'client@ssh.io',
+         email: 'clientso@ssh.io',
       }
       // Custom options
       const options = optionsWithBody('POST', body)
 
-      fetch(URL, options)
-         .then((res) => res.json())
-         .then((data) => {
+      const fetchData = async () => {
+         try {
+            const res = await fetch(URL, options)
+            const data = await res.json()
+
             console.log(data)
+            localStorage.setItem('user', JSON.stringify(data.payload))
+         } catch (err) {
+            console.error(err)
+         }
+      }
 
-            const id = data.payload.id
-            const URL = `http://localhost:3000/user/${id}`
-            const options = defaultOptions('GET')
-
-            // Access the user/id route (protected)
-            fetch(URL, options)
-               .then((res) => res.json())
-               .then((data) => console.log(data))
-         })
+      //   fetchData()
+      //   getUserData()
+      signIn()
    </script>
 </html>

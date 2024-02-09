@@ -23,7 +23,6 @@ func CreateJWToken(userID uuid.UUID) (string, error) {
 		"sub":    userID,
 		"issuer": "go-auth-server",
 		"aud":    "user",
-		"exp":    time.Now().Add(time.Hour).Unix(),
 		"iat":    time.Now().Unix(),
 	})
 

@@ -6,16 +6,16 @@ import (
 )
 
 func CreateTokenCookie(token string) http.Cookie {
-	expirationTime := time.Now().Add(time.Hour).Unix()
-	return http.Cookie{
+	cookie := http.Cookie{
 		Name:     "token",
 		Value:    token,
 		Path:     "/",
 		Secure:   false,
 		SameSite: http.SameSiteLaxMode,
 		HttpOnly: false,
-		Expires:  time.Unix(expirationTime, 0), // expires in an hour
+		MaxAge:   60, // Lives for 1 hour
 	}
+	return cookie
 }
 
 func ExpireCookie(w http.ResponseWriter, name string) {
