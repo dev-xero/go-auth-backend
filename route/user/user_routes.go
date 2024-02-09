@@ -9,6 +9,21 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
+/*
+Loads user routes
+
+Objectives:
+  - Setup a user sub-router
+  - Setup a database repository
+  - Handle requests made to user routes
+
+Params:
+  - router: A chi router
+  - db: A pointer to the application database
+
+Returns:
+  - No return value
+*/
 func LoadUserRoutes(router chi.Router, db *sql.DB) {
 	user := &handler.User{}
 	user.New(&repository.PostGreSQL{Database: db})
