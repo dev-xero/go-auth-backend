@@ -63,6 +63,7 @@ func JsonResponse(w http.ResponseWriter, msg string, status int, payload interfa
 		Payload: payload,
 	}
 
+	// Encode the response object
 	json, err := json.Marshal(res)
 	if err != nil {
 		errMsg := fmt.Errorf("[FAIL]: failed to encode json response: %w", err)

@@ -26,6 +26,7 @@ func AuthenticateMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		log.Println("[LOG]: authentication requested on:", r.URL)
 
+		// Obtain the token cookie
 		tokenString, err := r.Cookie("token")
 		if err != nil {
 			log.Println("[FAIL]: token not present in cookie")
@@ -34,6 +35,7 @@ func AuthenticateMiddleware(next http.Handler) http.Handler {
 			return
 		}
 
+		// Verify the token
 		token, err := authentication.VerifyToken(tokenString.Value)
 		if err != nil {
 			log.Printf("[FAIL]: token verification failed: %v", err)
