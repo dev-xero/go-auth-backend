@@ -8,6 +8,20 @@ import (
 	"github.com/dev-xero/authentication-backend/util"
 )
 
+/*
+Authentication middleware for restricting access to protected routes
+
+Objectives:
+  - Obtain the token cookie if present
+  - Verify the token
+  - Authenticate the user based on whether the token is valid
+
+Params:
+  - next: A http handler
+
+Returns:
+  - A http handler
+*/
 func AuthenticateMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		log.Println("[LOG]: authentication requested on:", r.URL)
