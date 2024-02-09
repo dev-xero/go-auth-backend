@@ -12,11 +12,28 @@ import (
 	"github.com/go-chi/cors"
 )
 
-// Load routes in the app server
+/*
+Definition:
+  - Loads the application routes
+
+Objectives:
+  - Create the application base router
+  - Setup CORS
+  - Setup a request handler to the base route
+  - Setup other routes and sub-routers
+  - Handle requests to undefined endpoints
+
+Params:
+  - db: A pointer to the application database
+
+Returns:
+  - A chi multiplexer
+*/
 func LoadRoutes(db *sql.DB) *chi.Mux {
 	router := chi.NewRouter()
 	router.Use(middleware.Logger)
-	// Setup cors
+
+	// Setup CORS
 	router.Use(cors.Handler(cors.Options{
 		AllowedOrigins:   []string{"https://*", "http://*"},
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
@@ -25,6 +42,7 @@ func LoadRoutes(db *sql.DB) *chi.Mux {
 		AllowCredentials: true,
 	}))
 
+	// Handle requests made to the base route
 	router.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		msg := "Welcome to the API"
 		util.JsonResponse(w, msg, http.StatusOK, nil)
@@ -40,6 +58,7 @@ func LoadRoutes(db *sql.DB) *chi.Mux {
 		user.LoadUserRoutes(router, db)
 	})
 
+	// Handle requests to undefined endpoints
 	router.NotFound(func(w http.ResponseWriter, r *http.Request) {
 		msg := "Undefined endpoint accessed"
 		util.JsonResponse(w, msg, http.StatusNotFound, nil)
