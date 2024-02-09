@@ -3,8 +3,9 @@ package route
 import (
 	"database/sql"
 
-	"github.com/dev-xero/authentication-backend/handler"
+	handler "github.com/dev-xero/authentication-backend/handler/auth"
 	repository "github.com/dev-xero/authentication-backend/repository/user"
+	"github.com/dev-xero/authentication-backend/service"
 	"github.com/go-chi/chi/v5"
 )
 
@@ -24,11 +25,14 @@ Returns:
   - No return value
 */
 func LoadAuthRoutes(router chi.Router, db *sql.DB) {
-	auth := &handler.Auth{}
-	auth.New(&repository.PostGreSQL{Database: db})
+	authService := &service.AuthService{}
+	authService.New(&repository.PostGreSQL{Database: db})
 
-	router.Get("/", auth.Home)
-	router.Post("/sign-up", auth.SignUp)
-	router.Post("/sign-in", auth.SignIn)
-	router.Post("/sign-out", auth.SignOut)
+	authHandler := &handler.AuthHandler{}
+	authHandler.WithService(authService)
+
+	router.Get("/", authHandler.Home)
+	router.Post("/sign-up", authHandler.SignUp)
+	router.Post("/sign-in", authHandler.SignIn)
+	router.Post("/sign-out", authHandler.SignOut)
 }
