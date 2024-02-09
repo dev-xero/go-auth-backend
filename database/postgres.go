@@ -10,6 +10,19 @@ import (
 	_ "github.com/lib/pq"
 )
 
+/*
+Constructs a PostGreSQL connection string
+
+Objectives:
+  - Load private connection details as environment variables
+  - Construct a connection string based on the details
+
+Params:
+  - No parameters
+
+Returns:
+  - A PostGreSQL connection string
+*/
 func getConnectionString() string {
 	err := godotenv.Load()
 	if err != nil {
@@ -34,6 +47,20 @@ func getConnectionString() string {
 	)
 }
 
+/*
+Connects to a PostGresQL database
+
+Objectives:
+  - Open a new database connection using the connection string
+  - Ping the database to make sure the connection is open
+
+Params:
+  - No parameters
+
+Returns:
+  - A pointer to the SQL database
+  - An error if unsuccessful
+*/
 func ConnectDatabase() (*sql.DB, error) {
 	database, err := sql.Open("postgres", getConnectionString())
 
