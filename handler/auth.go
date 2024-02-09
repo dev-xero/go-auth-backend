@@ -14,20 +14,74 @@ import (
 	"github.com/google/uuid"
 )
 
+/*
+Auth handler struct
+
+Objectives:
+  - Handle all auth requests
+
+Fields:
+  - repo: The database repository
+*/
 type Auth struct {
 	repo *repository.PostGreSQL
 }
 
+/*
+Initializes a new auth request handler
+
+Objectives:
+  - Initialize an auth request handler with the provided repo
+
+Params:
+  - repo: The database repo to bind the handler to
+
+Returns:
+  - No return value
+*/
 func (auth *Auth) New(repo *repository.PostGreSQL) {
 	auth.repo = repo
 }
 
+/*
+Handles requests made to the base auth route
+
+Objectives:
+  - Respond with an auth welcome message
+
+Params:
+  - w: A http response writer
+  - r: A pointer to a http request object
+
+Returns:
+  - No return value
+*/
 func (auth *Auth) Home(w http.ResponseWriter, r *http.Request) {
 	msg := "Auth route home"
 	util.JsonResponse(w, msg, http.StatusOK, nil)
 }
 
+/*
+Handles requests made to the auth/sign-up endpoint
+
+Objectives:
+  - Decode and read the auth request body into a user object
+  - Sanitize the user input
+  - Validate the user input
+  - Check that the user does not already exist
+  - Create a JSON Web Token
+  - Insert the user into the database
+  - Respond with the user object payload
+
+Params:
+  - w: A http response writer
+  - r: A pointer to a http request object
+
+Returns:
+  - No return value
+*/
 func (auth *Auth) SignUp(w http.ResponseWriter, r *http.Request) {
+	// Store the request body
 	var body = util.AuthRequestBody{}
 
 	// Read response body into body struct
@@ -37,15 +91,18 @@ func (auth *Auth) SignUp(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Sanitize user input
 	util.SanitizeUserInput(&body)
 	log.Printf("[LOG]: Sanitized user input")
 
+	// Validate the user input
 	if err := validators.ValidateUserInput(&body); err != nil {
 		msg := util.CapitalizeFirstLetter(err.Error())
 		util.JsonResponse(w, msg, http.StatusBadRequest, nil)
 		return
 	}
 
+	// Do not create a new user if the user already exists
 	userExists, err := auth.repo.UserExists(r.Context(), body.Email)
 	if err != nil {
 		log.Println(err)
@@ -54,13 +111,14 @@ func (auth *Auth) SignUp(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Check that the user doesn't already exist
+	// Respond with a bad request if the user exists
 	if userExists {
 		msg := "A user with that email already exists"
 		util.JsonResponse(w, msg, http.StatusBadRequest, nil)
 		return
 	}
 
+	// Prepare the user data for insertion
 	var user = model.User{
 		ID:       uuid.New(),
 		Username: body.Username,
@@ -68,7 +126,7 @@ func (auth *Auth) SignUp(w http.ResponseWriter, r *http.Request) {
 		Password: body.Password,
 	}
 
-	// Create a token and send it back to the user
+	// Generate a JSON Web token that can be sent to the user
 	token, err := authentication.CreateJWToken(user.ID)
 	if err != nil {
 		log.Println(err)
@@ -77,6 +135,7 @@ func (auth *Auth) SignUp(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Insert the user into the database
 	err = auth.repo.InsertUser(r.Context(), user)
 	if err != nil {
 		log.Println(err)
@@ -85,19 +144,41 @@ func (auth *Auth) SignUp(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Send response with user payload
+	// Create the user payload
 	var userPayload = util.UserPayload{
 		ID:       user.ID,
 		Username: user.Username,
 		Email:    user.Email,
 	}
 
+	// Set the token cookie and send the response
 	cookie := util.CreateTokenCookie(token)
 	http.SetCookie(w, &cookie)
 	util.JsonResponse(w, "Successfully inserted user into database", http.StatusOK, userPayload)
 }
 
+/*
+Handles requests made to the auth/sign-in route
+
+Objectives:
+  - Decode and read the auth request body into a user object
+  - Expire any token cookies that may be present
+  - Sanitize the user input
+  - Check that the user  exists
+  - If the use does not exist, respond with an error
+  - Compare the request body password with the user password hash
+  - Generate a new JSON Web token
+  - Send the token cookie and the user payload response
+
+Params:
+  - w: A http response writer
+  - r: A pointer to a http request object
+
+Returns:
+  - No return value
+*/
 func (auth *Auth) SignIn(w http.ResponseWriter, r *http.Request) {
+	// Store the auth request body
 	var body = util.AuthRequestBody{}
 
 	// Read response body into body struct
@@ -107,9 +188,13 @@ func (auth *Auth) SignIn(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Expire the token cookie
 	util.ExpireCookie(w, "token")
+
+	// Sanitize user input
 	util.SanitizeUserInput(&body)
 
+	// Check if the user exists
 	userExists, err := auth.repo.UserExists(r.Context(), body.Email)
 	if err != nil {
 		msg := "Internal server error, could not check if user already exists"
@@ -117,12 +202,14 @@ func (auth *Auth) SignIn(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// If the user does not exist, respond with an error
 	if !userExists {
 		msg := "A user with those credentials does not exist"
 		util.JsonResponse(w, msg, http.StatusBadRequest, nil)
 		return
 	}
 
+	// Query the database and obtain the user the the provided email
 	user, err := auth.repo.GetUserByEmail(r.Context(), body.Email)
 	if err != nil {
 		msg := "Internal server error, could not check if a user with that email exists"
@@ -130,7 +217,7 @@ func (auth *Auth) SignIn(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Check that the password matches
+	// Check that the password matches the hash
 	if !util.CompareWithHash([]byte(user.Password), body.Password) {
 		msg := "Provided passwords mismatch"
 		util.JsonResponse(w, msg, http.StatusUnauthorized, nil)
@@ -146,6 +233,7 @@ func (auth *Auth) SignIn(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Set the token cookie and send the response
 	cookie := util.CreateTokenCookie(token)
 	http.SetCookie(w, &cookie)
 	util.JsonResponse(w, "Successfully signed-in", http.StatusOK, user)
