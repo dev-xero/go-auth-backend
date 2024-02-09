@@ -12,8 +12,14 @@ import (
 	"github.com/dev-xero/authentication-backend/database"
 )
 
+/*
+Connects to the PostGreSQL database using the credentials
+
+Returns:
+  - A pointer to the sql database
+  - An error if the connection failed
+*/
 func initDatabaseConnection() (*sql.DB, error) {
-	// Attempt connecting to the database
 	db, err := database.ConnectDatabase()
 	if err != nil {
 		msg := "[FAIL]: unable to connect database"
@@ -23,15 +29,27 @@ func initDatabaseConnection() (*sql.DB, error) {
 	return db, nil
 }
 
+/*
+Main is the server entry point.
+
+Objectives:
+  - Initializes a database connection.
+  - Spins up a context channel to handle OS interrupts.
+  - Starts the server.
+*/
 func main() {
 	appDatabase, err := initDatabaseConnection()
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	// Setup a context channel to handle OS interrupts
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer cancel()
 
+	// Initialize the application with the database connection
 	app := application.New(appDatabase)
+
+	// Start the app
 	app.Start(ctx)
 }
