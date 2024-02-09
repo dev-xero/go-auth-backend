@@ -130,8 +130,6 @@ func (auth *Auth) SignIn(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Println("[PASS]:", user.Password)
-
 	// Check that the password matches
 	if !util.CompareWithHash([]byte(user.Password), body.Password) {
 		msg := "Provided passwords mismatch"
