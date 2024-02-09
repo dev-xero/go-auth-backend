@@ -10,8 +10,8 @@ import (
 Options for generating the hash
 
 Params:
-  - Min: minimum allowable cost
-  - Max: maximum allowable cost
+  - Min:  minimum allowable cost
+  - Max:  maximum allowable cost
   - Base: default cost to use if the the cost passed in is below Min
 */
 type HashCost struct {
@@ -33,7 +33,7 @@ Objectives:
   - Generate a bcrypt hash from the password using a base cost
 
 Params:
-  - str: The string to hash
+  - str:         The string to hash
   - costOptions: Contains configurations for the hashing cost
 
 Returns:
@@ -59,7 +59,7 @@ Objectives:
 
 Params:
   - hash: The hash to compare against
-  - str: The string to compare with the hash
+  - str:  The string to compare with the hash
 
 Returns:
   - True if the string matches the hash, false otherwise

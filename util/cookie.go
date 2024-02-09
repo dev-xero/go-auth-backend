@@ -37,7 +37,7 @@ Objectives:
   - Set the max age property of the cookie to < 0
 
 Params:
-  - w: A http response writer
+  - w:    A http response writer
   - name: The name of the cookie to expire
 
 Returns:
