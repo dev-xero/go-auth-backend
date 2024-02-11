@@ -11,7 +11,7 @@ A web server backend with complete JWT user authentication, written in GO.
 
 ## Application Architecture
 
-<img src="./diagrams/app-architecture.svg" alt="Application Architecture">
+<img src="./diagrams/app-architecture-diagram.svg" alt="Application Architecture">
    
 ## Running locally
 
