@@ -24,8 +24,9 @@ Objectives:
   - Send the token cookie and the user payload response
 
 Params:
-  - w: A http response writer
-  - r: A pointer to a http request object
+  - auth: The auth repo service
+  - w:    A http response writer
+  - r:    A pointer to a http request object
 
 Returns:
   - No return value

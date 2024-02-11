@@ -26,9 +26,9 @@ Objectives:
   - Respond with the user object payload
 
 Params:
-  - auth: A pointer to an auth handler
+  - auth: The auth repo service
   - w:    A http response writer
-  - r:    A http request object
+  - r:    A pointer to a http request object
 
 Returns:
   - No return value

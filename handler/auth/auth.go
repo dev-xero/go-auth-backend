@@ -1,10 +1,10 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
 
 	password "github.com/dev-xero/authentication-backend/handler/auth/password"
+	shared "github.com/dev-xero/authentication-backend/handler/auth/shared"
 	"github.com/dev-xero/authentication-backend/service"
 	"github.com/dev-xero/authentication-backend/util"
 )
@@ -72,5 +72,5 @@ func (auth *AuthHandler) SignIn(w http.ResponseWriter, r *http.Request) {
 }
 
 func (auth *AuthHandler) SignOut(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Sign-out route hit")
+	shared.SignOut(auth.service, w, r)
 }
