@@ -8,6 +8,10 @@ A web server backend with complete JWT user authentication, written in GO.
 2. JWT: authentication strategy
 3. PostgreSQL: primary database
 4. Render: cloud hosting platform
+
+## Application Architecture
+
+<img src="./diagrams/app-architecture.svg" alt="Application Architecture">
    
 ## Running locally
 
