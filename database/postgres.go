@@ -24,7 +24,7 @@ Returns:
   - A PostGreSQL connection string
 */
 func getConnectionString() string {
-	// Load environment variables in development
+	// Load environment variables from .env file in development
 	if env := os.Getenv("ENVIRONMENT"); env != "production" {
 		log.Println("[ENV]:", env)
 

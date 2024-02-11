@@ -12,9 +12,12 @@ import (
 )
 
 func CreateJWToken(userID uuid.UUID) (string, error) {
-	err := godotenv.Load()
-	if err != nil {
-		return "", fmt.Errorf("[FAIL]: could not load environment variables: %w", err)
+	// Load environment variables from .env file in development
+	if env := os.Getenv("ENVIRONMENT"); env != "production" {
+		err := godotenv.Load()
+		if err != nil {
+			return "", fmt.Errorf("[FAIL]: could not load environment variables: %w", err)
+		}
 	}
 
 	var secretKey = []byte(os.Getenv("JWT_SECRET_KEY"))
