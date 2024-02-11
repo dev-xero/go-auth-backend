@@ -5,6 +5,6 @@ tidy:
 	go mod tidy
 
 server: format tidy
-	go run server.go
+	ENVIRONMENT=development go run server.go
 
 .PHONY: format tidy

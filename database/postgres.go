@@ -24,10 +24,16 @@ Returns:
   - A PostGreSQL connection string
 */
 func getConnectionString() string {
-	// Load environment variables
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("[FATAL]: failed to connect database", err)
+	// Load environment variables in development
+	if env := os.Getenv("ENVIRONMENT"); env != "production" {
+		log.Println("[ENV]:", env)
+
+		err := godotenv.Load()
+		if err != nil {
+			log.Fatal("[FATAL]: failed to connect database", err)
+		}
+	} else {
+		log.Println("[ENV]: production")
 	}
 
 	// Store private connection details
