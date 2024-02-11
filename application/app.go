@@ -28,6 +28,7 @@ func New(db *sql.DB) *App {
 }
 
 func (app *App) Start(ctx context.Context) error {
+	var env string
 	// Load environment variables from .env file in development
 	if env := os.Getenv("ENVIRONMENT"); env != "production" {
 		err := godotenv.Load()
@@ -58,7 +59,13 @@ func (app *App) Start(ctx context.Context) error {
 		}
 	}()
 
-	url := fmt.Sprintf("%s:%s", address, port)
+	var url string
+	// Use the default address in a production environment
+	if env == "production" {
+		url = address
+	} else {
+		url = fmt.Sprintf("%s:%s", address, port)
+	}
 	log.Printf("[SUCCESS]: server listening at: %s\n", url)
 
 	// Handle graceful termination

@@ -27,6 +27,7 @@ func CreateJWToken(userID uuid.UUID) (string, error) {
 		"issuer": "go-auth-server",
 		"aud":    "user",
 		"iat":    time.Now().Unix(),
+		"exp":    time.Now().Add(time.Hour).Unix(),
 	})
 
 	log.Printf("[SUCCESS]: token claims added: %+v\n", claims)
@@ -40,9 +41,12 @@ func CreateJWToken(userID uuid.UUID) (string, error) {
 }
 
 func VerifyToken(tokenString string) (*jwt.Token, error) {
-	err := godotenv.Load()
-	if err != nil {
-		return nil, fmt.Errorf("[FAIL]: could not load environment variables: %w", err)
+	// Load environment variables from .env file in development
+	if env := os.Getenv("ENVIRONMENT"); env != "production" {
+		err := godotenv.Load()
+		if err != nil {
+			return nil, fmt.Errorf("[FAIL]: could not load environment variables: %w", err)
+		}
 	}
 
 	var secretKey = []byte(os.Getenv("JWT_SECRET_KEY"))
