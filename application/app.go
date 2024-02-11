@@ -28,12 +28,17 @@ func New(db *sql.DB) *App {
 }
 
 func (app *App) Start(ctx context.Context) error {
-	err := godotenv.Load()
-	if err != nil {
-		fmt.Println("[FAIL]: unable to load environment variables")
+	// Load environment variables from .env file in development
+	if env := os.Getenv("ENVIRONMENT"); env != "production" {
+		err := godotenv.Load()
+		if err != nil {
+			fmt.Println("[FAIL]: unable to load environment variables")
+		}
 	}
 
 	var port string = os.Getenv("PORT")
+	var address string = os.Getenv("ADDRESS")
+	var err error
 
 	server := &http.Server{
 		Addr:    fmt.Sprintf(":%s", port),
@@ -44,7 +49,7 @@ func (app *App) Start(ctx context.Context) error {
 
 	// Handle server listening on port in a goroutine
 	go func() {
-		err = server.ListenAndServe()
+		err := server.ListenAndServe()
 		if err != nil {
 			msg := "[FAIL]: unable to start server"
 
@@ -53,7 +58,7 @@ func (app *App) Start(ctx context.Context) error {
 		}
 	}()
 
-	url := fmt.Sprintf("http://127.0.0.1:%s", port)
+	url := fmt.Sprintf("%s:%s", address, port)
 	log.Printf("[SUCCESS]: server listening at: %s\n", url)
 
 	// Handle graceful termination
