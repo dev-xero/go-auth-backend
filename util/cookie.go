@@ -2,7 +2,6 @@ package util
 
 import (
 	"net/http"
-	"time"
 )
 
 /*
@@ -22,9 +21,9 @@ func CreateTokenCookie(token string) http.Cookie {
 		Name:     "token",
 		Value:    token,
 		Path:     "/",
-		Secure:   false,
+		Secure:   true,
 		SameSite: http.SameSiteLaxMode,
-		HttpOnly: false,
+		HttpOnly: true,
 		MaxAge:   3600, // Lives for 1 hour
 	}
 	return cookie
@@ -44,13 +43,14 @@ Returns:
   - No return value
 */
 func ExpireCookie(w http.ResponseWriter, name string) {
-	expiration := time.Now().Add(-24 * time.Hour)
 	deletedCookie := &http.Cookie{
 		Name:     name,
 		Value:    "",
-		Expires:  expiration,
+		Path:     "/",
+		Secure:   true,
+		SameSite: http.SameSiteLaxMode,
+		HttpOnly: true,
 		MaxAge:   -1,
-		HttpOnly: false,
 	}
 	http.SetCookie(w, deletedCookie)
 }
