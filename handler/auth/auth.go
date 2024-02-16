@@ -72,5 +72,5 @@ func (auth *AuthHandler) SignIn(w http.ResponseWriter, r *http.Request) {
 }
 
 func (auth *AuthHandler) SignOut(w http.ResponseWriter, r *http.Request) {
-	shared.SignOut(auth.service, w, r)
+	shared.SignOut(w, r)
 }

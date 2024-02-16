@@ -4,7 +4,6 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/dev-xero/authentication-backend/service"
 	"github.com/dev-xero/authentication-backend/util"
 )
 
@@ -23,7 +22,7 @@ Params:
 Returns:
   - No return value
 */
-func SignOut(auth *service.AuthService, w http.ResponseWriter, r *http.Request) {
+func SignOut(w http.ResponseWriter, r *http.Request) {
 	// Expire the token cookie
 	util.ExpireCookie(w, "token")
 
