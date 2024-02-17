@@ -25,3 +25,22 @@ Returns:
 func GoogleSignIn(auth *service.AuthService, w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Google route hit"))
 }
+
+/*
+Handles callbacks to Google sign-in
+
+Objectives:
+  - Handle auth callback
+  - Save user to the database
+
+Params:
+  - auth: The auth repo service
+  - w:    A http response writer
+  - r:    A pointer to a http request object
+
+Returns:
+  - No return value
+*/
+func GoogleSignInCallback(auth *service.AuthService, w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("Google callback route hit"))
+}

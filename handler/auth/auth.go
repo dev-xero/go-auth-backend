@@ -91,6 +91,23 @@ func (auth *AuthHandler) GoogleSignIn(w http.ResponseWriter, r *http.Request) {
 }
 
 /*
+Handles callbacks from Google
+
+Objectives:
+  - Handle Google sign-in callbacks
+
+Params:
+  - w: A http response writer
+  - r: A pointer to a http request object
+
+Returns:
+  - No return value
+*/
+func (auth *AuthHandler) GoogleSignInCallback(w http.ResponseWriter, r *http.Request) {
+	oauth.GoogleSignInCallback(auth.service, w, r)
+}
+
+/*
 Handles requests made to the auth/sign-in route
 
 Objectives:
