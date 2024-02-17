@@ -87,8 +87,16 @@ func SignIn(auth *service.AuthService, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Create the user payload
+	// Create the user payload
+	var userPayload = util.UserPayload{
+		ID:       user.ID,
+		Username: user.Username,
+		Email:    user.Email,
+	}
+
 	// Set the token cookie and send the response
 	cookie := util.CreateTokenCookie(token)
 	http.SetCookie(w, &cookie)
-	util.JsonResponse(w, "Successfully signed-in", http.StatusOK, user)
+	util.JsonResponse(w, "Successfully signed-in", http.StatusOK, userPayload)
 }
