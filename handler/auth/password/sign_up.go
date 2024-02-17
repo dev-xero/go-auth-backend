@@ -35,7 +35,7 @@ Returns:
 */
 func SignUp(auth *service.AuthService, w http.ResponseWriter, r *http.Request) {
 	// Store the request body
-	var body = util.AuthRequestBody{}
+	var body = util.SignUpRequestBody{}
 
 	// Read response body into body struct
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {

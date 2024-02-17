@@ -20,7 +20,7 @@ Params:
 Returns:
   - An error if the auth request body doesn't pass all checks
 */
-func ValidateUserInput(body *util.AuthRequestBody) error {
+func ValidateUserInput(body *util.SignUpRequestBody) error {
 	// Verify that the fields are not empty
 	if body.Username == "" || body.Email == "" || body.Password == "" {
 		log.Println("[FAIL]: username, email or password is empty")

@@ -33,7 +33,7 @@ Returns:
 */
 func SignIn(auth *service.AuthService, w http.ResponseWriter, r *http.Request) {
 	// Store the auth request body
-	var body = util.AuthRequestBody{}
+	var body = util.SignInRequestBody{}
 
 	// Read response body into body struct
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
