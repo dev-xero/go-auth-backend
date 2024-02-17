@@ -44,9 +44,12 @@ make server
 4. domain`/auth/sign-out`
 5. domain`/user/id`
 
+> [!NOTE]  
+> The URL and port number can be different depending on your configurations.
+
 ## 1. Sign Up
     
-  The URL and port number can be different depending on your configurations
+  All sign-up requests to the server follow this convention.
   
   ### Request
   
@@ -57,12 +60,13 @@ make server
   
   ```json
   {
-    "email":    "string",
-    "username": "string",
-    "password": "string"
+    "email":    "root@usr.ssh",
+    "username": "root",
+    "password": "rootsystemuser"
   }
   ```
-  Upon successful sign-up, a response like the one below will be sent along with a token stored in the client's cookie store
+
+  The provided password is hashed on the server. Upon successful sign-up, a response like the one below will be sent along with a token stored in the client's cookie store.
   
   ### Response
 
@@ -71,13 +75,69 @@ make server
       "message": "Successfully inserted user into database",
       "success": true,
       "payload": {
-          "id":       "generated-uuid",
-          "username": "username",
-          "email":    "email"
+          "id":       "d7407d4c-74d2-4f83-9298-99ac81565716",
+          "username": "root",
+          "email":    "root@usr.ssh"
       }
   }
   ```
 
 
+## 2. Sign In
+    
+  Sign-in requests made to the server should follow this format.
+  
+  ### Request
+  
+  ```url
+  [POST] http://localhost:3000/auth/sign-in
+  ```
+  ### Body (JSON)
+  
+  ```json
+  {
+    "email":    "root@usr.ssh",
+    "password": "rootsystemuser"
+  }
+  ```
 
-<!--- Eraser file: https://app.eraser.io/workspace/OC7cihBr6RUkY14rwfby --->
+  On successful sign-in, the user object is returned along with a JSON Web Token for future authentication.
+  
+  ### Response
+
+  A successful sign-in response looks like this:
+
+  ```json
+ {
+    "message": "Successfully signed-in",
+    "success": true,
+    "payload": {
+        "id":       "d7407d4c-74d2-4f83-9298-99ac81565716",
+        "username": "user",
+        "email":    "user@code.sh"
+    }
+}
+  ```
+
+
+## 3. Sign Out
+    
+  Sign-out requests expire the cookie and revokes user authorization.
+  
+  ### Request
+  
+  ```url
+  [POST] http://localhost:3000/auth/sign-out
+  ```
+  
+  ### Response
+
+  A successful sign-in response looks like this:
+
+  ```json
+{
+    "message": "Successfully signed-out",
+    "success": true,
+    "payload": null
+}
+  ```
