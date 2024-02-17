@@ -35,4 +35,5 @@ func LoadAuthRoutes(router chi.Router, db *sql.DB) {
 	router.Post("/sign-up", authHandler.SignUp)
 	router.Post("/sign-in", authHandler.SignIn)
 	router.Post("/sign-out", authHandler.SignOut)
+	router.Post("/oauth/google", authHandler.GoogleSignIn)
 }

@@ -3,6 +3,7 @@ package handler
 import (
 	"net/http"
 
+	oauth "github.com/dev-xero/authentication-backend/handler/auth/oauth"
 	password "github.com/dev-xero/authentication-backend/handler/auth/password"
 	shared "github.com/dev-xero/authentication-backend/handler/auth/shared"
 	"github.com/dev-xero/authentication-backend/service"
@@ -71,6 +72,37 @@ func (auth *AuthHandler) SignIn(w http.ResponseWriter, r *http.Request) {
 	password.SignIn(auth.service, w, r)
 }
 
+/*
+Handles requests made to the auth/oauth/google route
+
+Objectives:
+  - Handle the request
+  - Return user data model on success
+
+Params:
+  - w: A http response writer
+  - r: A pointer to a http request object
+
+Returns:
+  - No return value
+*/
+func (auth *AuthHandler) GoogleSignIn(w http.ResponseWriter, r *http.Request) {
+	oauth.GoogleSignIn(auth.service, w, r)
+}
+
+/*
+Handles requests made to the auth/sign-in route
+
+Objectives:
+  - Expire the cookie
+
+Params:
+  - w: A http response writer
+  - r: A pointer to a http request object
+
+Returns:
+  - No return value
+*/
 func (auth *AuthHandler) SignOut(w http.ResponseWriter, r *http.Request) {
 	shared.SignOut(w, r)
 }
