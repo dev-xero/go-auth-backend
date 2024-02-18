@@ -2,14 +2,16 @@ package handler
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
-	"io"
 	"log"
 	"net/http"
 	"os"
 
+	"github.com/dev-xero/authentication-backend/model"
 	"github.com/dev-xero/authentication-backend/service"
 	"github.com/dev-xero/authentication-backend/util"
+	"github.com/google/uuid"
 	"github.com/joho/godotenv"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
@@ -101,15 +103,31 @@ func GoogleSignInCallback(auth *service.AuthService, w http.ResponseWriter, r *h
 	}
 
 	// Get user info from Google
-	data, err := getGoogleUserData(r.FormValue("code"))
+	userData, err := getGoogleUserData(r.FormValue("code"))
 	if err != nil {
 		log.Println("[FAIL]:", err.Error())
 		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		return
 	}
 
-	// Respond with the data
-	fmt.Fprintf(w, "%s\n", data)
+	// Save user to database
+	err = auth.Repo.InsertUser(r.Context(), *userData)
+	if err != nil {
+		log.Println("[FAIL]: could not insert user")
+		util.JsonResponse(w, "Failed to create new user", http.StatusInternalServerError, nil)
+		return
+	}
+
+	// Create the user payload
+	var userPayload = util.UserPayload{
+		ID:       userData.ID,
+		Username: userData.Username,
+		Email:    userData.Email,
+	}
+
+	// Respond with the user payload
+	util.JsonResponse(w, "Successfully signed-in with Google", http.StatusOK, userPayload)
+	return
 }
 
 /*
@@ -122,10 +140,10 @@ Returns:
   - The user data which is a byte slice
   - An error if any step fails
 */
-func getGoogleUserData(code string) ([]byte, error) {
+func getGoogleUserData(code string) (*model.User, error) {
 	token, err := googleOauthConfig.Exchange(context.Background(), code)
 	if err != nil {
-		return nil, fmt.Errorf("failed to exchange code")
+		return &model.User{}, fmt.Errorf("failed to exchange code")
 	}
 
 	url := fmt.Sprintf("%s%s", oauthGoogleUserURL, token.AccessToken)
@@ -134,15 +152,30 @@ func getGoogleUserData(code string) ([]byte, error) {
 	// Make a response using the token
 	res, err := http.Get(url)
 	if err != nil {
-		return nil, fmt.Errorf("failed to get user info")
+		return &model.User{}, fmt.Errorf("failed to get user info")
 	}
 
 	// Read user data
 	defer res.Body.Close()
-	contents, err := io.ReadAll(res.Body)
-	if err != nil {
-		return nil, fmt.Errorf("failed to read response")
+
+	var responseData struct {
+		Username string `json:"name"`
+		Email    string `json:"email"`
+		Password string `json:"id"`
 	}
 
-	return contents, nil
+	// Read response into struct
+	if err := json.NewDecoder(res.Body).Decode(&responseData); err != nil {
+		return &model.User{}, fmt.Errorf("failed to decode response: %w", err)
+	}
+
+	// Create user data model
+	var userData = &model.User{
+		ID:       uuid.New(),
+		Username: responseData.Username,
+		Email:    responseData.Email,
+		Password: responseData.Password,
+	}
+
+	return userData, nil
 }
