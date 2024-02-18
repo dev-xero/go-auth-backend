@@ -35,6 +35,7 @@ func LoadAuthRoutes(router chi.Router, db *sql.DB) {
 	router.Post("/sign-up", authHandler.SignUp)
 	router.Post("/sign-in", authHandler.SignIn)
 	router.Post("/sign-out", authHandler.SignOut)
-	router.Post("/oauth/google", authHandler.GoogleSignIn)
-	router.Post("/oauth/google/callback", authHandler.GoogleSignInCallback)
+	router.Get("/oauth/google", authHandler.GoogleSignIn)
+	router.Get("/oauth/google/callback", authHandler.GoogleSignInCallback)
+	// TODO: Remove trailing slashes
 }
