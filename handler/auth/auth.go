@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 
 	oauth "github.com/dev-xero/authentication-backend/handler/auth/oauth"
@@ -8,6 +9,7 @@ import (
 	shared "github.com/dev-xero/authentication-backend/handler/auth/shared"
 	"github.com/dev-xero/authentication-backend/service"
 	"github.com/dev-xero/authentication-backend/util"
+	"github.com/go-chi/chi/v5"
 )
 
 type AuthHandler struct {
@@ -105,6 +107,22 @@ Returns:
 */
 func (auth *AuthHandler) GoogleSignInCallback(w http.ResponseWriter, r *http.Request) {
 	oauth.GoogleSignInCallback(auth.service, w, r)
+}
+
+/*
+Returns a generic failure response when oauth fails
+
+Params:
+  - w: A http response writer
+  - r: The  http request object
+
+Returns:
+  - No return value
+*/
+func (auth *AuthHandler) OAuthFailure(w http.ResponseWriter, r *http.Request) {
+	provider := chi.URLParam(r, "x")
+	msg := fmt.Sprintf("Failed to sign-in using %s OAuth", util.CapitalizeFirstLetter(provider))
+	util.JsonResponse(w, msg, http.StatusUnauthorized, nil)
 }
 
 /*

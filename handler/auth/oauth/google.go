@@ -96,10 +96,11 @@ Returns:
 func GoogleSignInCallback(auth *service.AuthService, w http.ResponseWriter, r *http.Request) {
 	// Read state from cookie
 	oauthState, _ := r.Cookie("oauthstate")
+	failureRedirectURL := "failure"
 
 	if r.FormValue("state") != oauthState.Value {
 		log.Println("[AUTH]: Oauth states do not match")
-		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		http.Redirect(w, r, failureRedirectURL, http.StatusTemporaryRedirect)
 		return
 	}
 
@@ -107,7 +108,7 @@ func GoogleSignInCallback(auth *service.AuthService, w http.ResponseWriter, r *h
 	userData, err := getGoogleUserData(r.FormValue("code"))
 	if err != nil {
 		log.Println("[FAIL]:", err.Error())
-		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		http.Redirect(w, r, failureRedirectURL, http.StatusTemporaryRedirect)
 		return
 	}
 
