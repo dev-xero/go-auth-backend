@@ -61,7 +61,7 @@ func (app *App) Start(ctx context.Context) error {
 
 	var url string
 	// Use the default address in a production environment
-	if env == "production" {
+	if env != "development" {
 		url = address
 	} else {
 		url = fmt.Sprintf("%s:%s", address, port)
