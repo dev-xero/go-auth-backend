@@ -28,7 +28,6 @@ func New(db *sql.DB) *App {
 }
 
 func (app *App) Start(ctx context.Context) error {
-	var env string
 	// Load environment variables from .env file in development
 	if env := os.Getenv("ENVIRONMENT"); env != "production" {
 		err := godotenv.Load()
