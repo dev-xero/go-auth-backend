@@ -1,4 +1,4 @@
-# `GO Authentication Backend` 
+# `GO Auth Backend` 
 
 A web server backend with complete JWT user authentication, written in GO.
 
