@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/dev-xero/authentication-backend/authentication"
 	"github.com/dev-xero/authentication-backend/model"
 	"github.com/dev-xero/authentication-backend/service"
 	"github.com/dev-xero/authentication-backend/util"
@@ -118,6 +119,15 @@ func GoogleSignInCallback(auth *service.AuthService, w http.ResponseWriter, r *h
 		return
 	}
 
+	// Generate a new token and send response
+	token, err := authentication.CreateJWToken(userData.ID)
+	if err != nil {
+		log.Println(err)
+		msg := "Failed to create token"
+		util.JsonResponse(w, msg, http.StatusInternalServerError, nil)
+		return
+	}
+
 	// Create the user payload
 	var userPayload = util.UserPayload{
 		ID:       userData.ID,
@@ -125,9 +135,10 @@ func GoogleSignInCallback(auth *service.AuthService, w http.ResponseWriter, r *h
 		Email:    userData.Email,
 	}
 
-	// Respond with the user payload
+	// Respond with the payload
+	cookie := util.CreateTokenCookie(token)
+	http.SetCookie(w, &cookie)
 	util.JsonResponse(w, "Successfully signed-in with Google", http.StatusOK, userPayload)
-	return
 }
 
 /*

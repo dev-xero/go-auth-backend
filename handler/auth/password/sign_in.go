@@ -88,7 +88,6 @@ func SignIn(auth *service.AuthService, w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Create the user payload
-	// Create the user payload
 	var userPayload = util.UserPayload{
 		ID:       user.ID,
 		Username: user.Username,
