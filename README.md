@@ -42,7 +42,8 @@ make server
 2. domain`/auth/sign-up`
 3. domain`/auth/sign-in`
 4. domain`/auth/sign-out`
-5. domain`/user/id`
+5. domain`/auth/oauth/google`
+6. domain`/user/id`
 
 > [!NOTE]  
 > The URL and port number can be different depending on your configurations.
@@ -119,8 +120,34 @@ make server
 }
   ```
 
+## 3. Google Sign In
+    
+  The user can also sign-in with their Google accounts using OAuth
+  
+  ### Request
+  
+  ```url
+  [GET] http://localhost:3000/auth/oauth/google
+  ```
+  
+  ### Response
 
-## 3. Sign Out
+  A successful sign-in response looks like this:
+
+  ```json
+{
+    "message": "Successfully signed-in with Google",
+    "success": true,
+     "payload": {
+        "id":       "d7407d4c-74d2-4f83-9298-99ac81565716",
+        "username": "user",
+        "email":    "user@code.sh"
+       }
+}
+  ```
+
+
+## 4. Sign Out
     
   Sign-out requests expire the cookie and revokes user authorization.
   
