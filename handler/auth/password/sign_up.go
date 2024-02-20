@@ -56,7 +56,7 @@ func SignUp(auth *service.AuthService, w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Do not create a new user if the user already exists
-	userExists, err := auth.Repo.UserExists(r.Context(), body.Email)
+	userExists, err := auth.Repo.UserExists(r.Context(), body.Email, body.Username)
 	if err != nil {
 		log.Println(err)
 		msg := "Could not check if user already exists"
@@ -66,7 +66,7 @@ func SignUp(auth *service.AuthService, w http.ResponseWriter, r *http.Request) {
 
 	// Respond with a bad request if the user exists
 	if userExists {
-		msg := "A user with that email already exists"
+		msg := "A user with those credentials already exists"
 		util.JsonResponse(w, msg, http.StatusBadRequest, nil)
 		return
 	}

@@ -49,7 +49,7 @@ func SignIn(auth *service.AuthService, w http.ResponseWriter, r *http.Request) {
 	util.SanitizeUserInput(&body)
 
 	// Check if the user exists
-	userExists, err := auth.Repo.UserExists(r.Context(), body.Email)
+	userExists, err := auth.Repo.UserExists(r.Context(), body.Email, "")
 	if err != nil {
 		msg := "Internal server error, could not check if user already exists"
 		util.JsonResponse(w, msg, http.StatusInternalServerError, nil)

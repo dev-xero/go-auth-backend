@@ -96,17 +96,17 @@ Returns:
   - A boolean indicating whether the user exists
   - An error, in case the query failed
 */
-func (repo *PostGreSQL) UserExists(ctx context.Context, email string) (bool, error) {
+func (repo *PostGreSQL) UserExists(ctx context.Context, email string, username string) (bool, error) {
 	// Construct a query to check if a column with the email exists
 	var checkUserExistsQuery = `
-		SELECT EXISTS (SELECT 1 FROM users WHERE email = $1)
+		SELECT EXISTS (SELECT 1 FROM users WHERE email = $1 OR username = $2)
 	`
 
 	// Exists is set to false by default
 	var exists = false
 
 	// Check if the user is already stored in the database
-	err := repo.Database.QueryRowContext(ctx, checkUserExistsQuery, email).Scan(&exists)
+	err := repo.Database.QueryRowContext(ctx, checkUserExistsQuery, email, username).Scan(&exists)
 	if err != nil {
 		log.Println(err)
 
@@ -236,8 +236,8 @@ func (repo *PostGreSQL) createTableIfNonExistent(ctx context.Context, tx *sql.Tx
 	var createTableQuery = fmt.Sprintf(`
 		CREATE TABLE IF NOT EXISTS %s (
 			id UUID PRIMARY KEY,
-			username VARCHAR(255) NOT NULL,
-			email VARCHAR(255) NOT NULL,
+			username VARCHAR(255) NOT NULL UNIQUE,
+			email VARCHAR(255) NOT NULL UNIQUE,
 			password VARCHAR(255) NOT NULL
 		);
 	`, table)

@@ -112,6 +112,13 @@ func GoogleSignInCallback(auth *service.AuthService, w http.ResponseWriter, r *h
 		return
 	}
 
+	// Make sure the user doesn't already exist
+	userExists, _ := auth.Repo.UserExists(r.Context(), userData.Email, userData.Username)
+	if userExists {
+		util.JsonResponse(w, "User already exists", http.StatusConflict, nil)
+		return
+	}
+
 	// Save user to database
 	err = auth.Repo.InsertUser(r.Context(), *userData)
 	if err != nil {
