@@ -3,7 +3,7 @@ package service
 import repository "github.com/dev-xero/authentication-backend/repository/user"
 
 /*
-AuthService handler struct
+DatabaseProvider handler struct
 
 Objectives:
   - Handle all auth requests
@@ -11,15 +11,12 @@ Objectives:
 Fields:
   - repo: The database repository
 */
-type AuthService struct {
+type DatabaseProvider struct {
 	Repo *repository.PostGreSQL
 }
 
 /*
-Initializes a new auth service
-
-Objectives:
-  - Initialize an auth service with the provided repo
+Initializes a new PostgreSQL database service
 
 Params:
   - repo: The database repo to bind the handler to
@@ -27,6 +24,6 @@ Params:
 Returns:
   - No return value
 */
-func (auth *AuthService) New(repo *repository.PostGreSQL) {
-	auth.Repo = repo
+func (database *DatabaseProvider) New(repo *repository.PostGreSQL) {
+	database.Repo = repo
 }

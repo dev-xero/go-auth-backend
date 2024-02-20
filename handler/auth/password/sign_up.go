@@ -26,14 +26,14 @@ Objectives:
   - Respond with the user object payload
 
 Params:
-  - auth: The auth repo service
-  - w:    A http response writer
-  - r:    A pointer to a http request object
+  - dbService: The database service provider
+  - w:         A http response writer
+  - r:         A pointer to a http request object
 
 Returns:
   - No return value
 */
-func SignUp(auth *service.AuthService, w http.ResponseWriter, r *http.Request) {
+func SignUp(dbService *service.DatabaseProvider, w http.ResponseWriter, r *http.Request) {
 	// Store the request body
 	var body = util.SignUpRequestBody{}
 
@@ -56,7 +56,7 @@ func SignUp(auth *service.AuthService, w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Do not create a new user if the user already exists
-	userExists, err := auth.Repo.UserExists(r.Context(), body.Email, body.Username)
+	userExists, err := dbService.Repo.UserExists(r.Context(), body.Email, body.Username)
 	if err != nil {
 		log.Println(err)
 		msg := "Could not check if user already exists"
@@ -89,7 +89,7 @@ func SignUp(auth *service.AuthService, w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Insert the user into the database
-	err = auth.Repo.InsertUser(r.Context(), user)
+	err = dbService.Repo.InsertUser(r.Context(), user)
 	if err != nil {
 		log.Println(err)
 		msg := "Could not insert user into database"

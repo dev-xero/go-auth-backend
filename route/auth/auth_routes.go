@@ -25,11 +25,11 @@ Returns:
   - No return value
 */
 func LoadAuthRoutes(router chi.Router, db *sql.DB) {
-	authService := &service.AuthService{}
-	authService.New(&repository.PostGreSQL{Database: db})
+	authDBService := &service.DatabaseProvider{}
+	authDBService.New(&repository.PostGreSQL{Database: db})
 
 	authHandler := &handler.AuthHandler{}
-	authHandler.WithService(authService)
+	authHandler.WithService(authDBService)
 
 	router.Get("/", authHandler.Home)
 	router.Post("/sign-up", authHandler.SignUp)

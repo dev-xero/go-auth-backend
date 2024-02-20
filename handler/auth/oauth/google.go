@@ -57,14 +57,14 @@ Objectives:
   - Handle auth callback
 
 Params:
-  - auth: The auth repo service
-  - w:    A http response writer
-  - r:    A pointer to a http request object
+  - dbService: The database service provider
+  - w:         A http response writer
+  - r:         A pointer to a http request object
 
 Returns:
   - No return value
 */
-func GoogleSignIn(auth *service.AuthService, w http.ResponseWriter, r *http.Request) {
+func GoogleSignIn(w http.ResponseWriter, r *http.Request) {
 	// Initialize the config
 	err := initializeGoogleConfig()
 	if err != nil {
@@ -86,14 +86,14 @@ Objectives:
   - Save user to the database
 
 Params:
-  - auth: The auth repo service
-  - w:    A http response writer
-  - r:    A pointer to a http request object
+  - dbService: The database service provider
+  - w:         A http response writer
+  - r:         A pointer to a http request object
 
 Returns:
   - No return value
 */
-func GoogleSignInCallback(auth *service.AuthService, w http.ResponseWriter, r *http.Request) {
+func GoogleSignInCallback(dbService *service.DatabaseProvider, w http.ResponseWriter, r *http.Request) {
 	// Read state from cookie
 	oauthState, _ := r.Cookie("oauthstate")
 	failureRedirectURL := "failure"
@@ -113,14 +113,14 @@ func GoogleSignInCallback(auth *service.AuthService, w http.ResponseWriter, r *h
 	}
 
 	// Make sure the user doesn't already exist
-	userExists, _ := auth.Repo.UserExists(r.Context(), userData.Email, userData.Username)
+	userExists, _ := dbService.Repo.UserExists(r.Context(), userData.Email, userData.Username)
 	if userExists {
 		util.JsonResponse(w, "User already exists", http.StatusConflict, nil)
 		return
 	}
 
 	// Save user to database
-	err = auth.Repo.InsertUser(r.Context(), *userData)
+	err = dbService.Repo.InsertUser(r.Context(), *userData)
 	if err != nil {
 		log.Println("[FAIL]: could not insert user")
 		util.JsonResponse(w, "Failed to create new user", http.StatusInternalServerError, nil)

@@ -13,11 +13,11 @@ import (
 )
 
 type AuthHandler struct {
-	service *service.AuthService
+	dbService *service.DatabaseProvider
 }
 
-func (authHandler *AuthHandler) WithService(service *service.AuthService) {
-	authHandler.service = service
+func (authHandler *AuthHandler) WithService(service *service.DatabaseProvider) {
+	authHandler.dbService = service
 }
 
 /*
@@ -53,7 +53,7 @@ Returns:
   - No return value
 */
 func (auth *AuthHandler) SignUp(w http.ResponseWriter, r *http.Request) {
-	password.SignUp(auth.service, w, r)
+	password.SignUp(auth.dbService, w, r)
 }
 
 /*
@@ -71,7 +71,7 @@ Returns:
   - No return value
 */
 func (auth *AuthHandler) SignIn(w http.ResponseWriter, r *http.Request) {
-	password.SignIn(auth.service, w, r)
+	password.SignIn(auth.dbService, w, r)
 }
 
 /*
@@ -89,7 +89,7 @@ Returns:
   - No return value
 */
 func (auth *AuthHandler) GoogleSignIn(w http.ResponseWriter, r *http.Request) {
-	oauth.GoogleSignIn(auth.service, w, r)
+	oauth.GoogleSignIn(w, r)
 }
 
 /*
@@ -106,7 +106,7 @@ Returns:
   - No return value
 */
 func (auth *AuthHandler) GoogleSignInCallback(w http.ResponseWriter, r *http.Request) {
-	oauth.GoogleSignInCallback(auth.service, w, r)
+	oauth.GoogleSignInCallback(auth.dbService, w, r)
 }
 
 /*

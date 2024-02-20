@@ -24,14 +24,14 @@ Objectives:
   - Send the token cookie and the user payload response
 
 Params:
-  - auth: The auth repo service
-  - w:    A http response writer
-  - r:    A pointer to a http request object
+  - dbService: The database service provider
+  - w:         A http response writer
+  - r:         A pointer to a http request object
 
 Returns:
   - No return value
 */
-func SignIn(auth *service.AuthService, w http.ResponseWriter, r *http.Request) {
+func SignIn(dbService *service.DatabaseProvider, w http.ResponseWriter, r *http.Request) {
 	// Store the auth request body
 	var body = util.SignInRequestBody{}
 
@@ -49,7 +49,7 @@ func SignIn(auth *service.AuthService, w http.ResponseWriter, r *http.Request) {
 	util.SanitizeUserInput(&body)
 
 	// Check if the user exists
-	userExists, err := auth.Repo.UserExists(r.Context(), body.Email, "")
+	userExists, err := dbService.Repo.UserExists(r.Context(), body.Email, "")
 	if err != nil {
 		msg := "Internal server error, could not check if user already exists"
 		util.JsonResponse(w, msg, http.StatusInternalServerError, nil)
@@ -64,7 +64,7 @@ func SignIn(auth *service.AuthService, w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Query the database and obtain the user the the provided email
-	user, err := auth.Repo.GetUserByEmail(r.Context(), body.Email)
+	user, err := dbService.Repo.GetUserByEmail(r.Context(), body.Email)
 	if err != nil {
 		msg := "Internal server error, could not check if a user with that email exists"
 		util.JsonResponse(w, msg, http.StatusInternalServerError, nil)
