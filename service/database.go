@@ -6,7 +6,7 @@ import repository "github.com/dev-xero/authentication-backend/repository/user"
 DatabaseProvider handler struct
 
 Objectives:
-  - Handle all auth requests
+  - Provides database repositories to handlers
 
 Fields:
   - repo: The database repository
@@ -16,7 +16,7 @@ type DatabaseProvider struct {
 }
 
 /*
-Initializes a new PostgreSQL database service
+Initializes a new database service
 
 Params:
   - repo: The database repo to bind the handler to
